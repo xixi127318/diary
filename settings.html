@@ -43,16 +43,12 @@ body{margin:0;min-height:100vh;background:#f4f4f5;font-family:-apple-system,"Pin
 
   <div class="cap">解锁</div>
   <div class="group">
-    <div class="row" id="rBio"><span class="ic" style="background:#07c160">脸</span>录入面容 / 指纹<span class="r" id="bioState"></span><span class="arrow" style="margin-left:8px">›</span></div>
+    <div class="row" id="rBio"><span class="ic" style="background:#07c160">脸</span>录入指纹<span class="r" id="bioState"></span><span class="arrow" style="margin-left:8px">›</span></div>
     <div class="row" id="rBioClr"><span class="ic" style="background:#e64b4b">清</span>清掉已录的认证<span class="r"><span class="arrow">›</span></span></div>
-    <div class="hint" id="bioHint">网页只能调系统认证：手机里录了面容就弹面容，只有指纹就弹指纹。弹哪个由系统决定，不是我能挑的。</div>
+    <div class="hint" id="bioHint">网页只能调系统认证。这台手机只给了指纹，那就只能指纹。</div>
   </div>
 
-  <div class="cap">拍一拍</div>
-  <div class="group">
-    <div class="row" id="rPaiMe"><span class="ic" style="background:#f2c94c">我</span>我的后缀<span class="r" id="paiMeV"></span><span class="arrow" style="margin-left:8px">›</span></div>
-    <div class="row" id="rPaiAi"><span class="ic" style="background:#8e7cf0">他</span>哥哥的后缀<span class="r" id="paiAiV"></span><span class="arrow" style="margin-left:8px">›</span></div>
-  </div>
+
 
   <div class="cap">系统</div>
   <div class="group">
@@ -89,8 +85,6 @@ function paint(){
   $('tAvAi').innerHTML=b?"<img src='"+b+"'>":'渡';
   var g=ls('du_greet',null);
   $('greetNow').textContent=g?g:'按时间自动';
-  $('paiMeV').textContent=ls('du_paiti','oㅂo|| 肿么惹');
-  $('paiAiV').textContent=ls('du_paiti_ai','肩膀');
   var c=ls('du_cred',null);
   $('bioState').textContent=c?'已录':'未录';
 }
@@ -109,8 +103,8 @@ $('mask').onclick=function(e){if(e.target.id==='mask')$('mask').classList.remove
 $('dYes').onclick=function(){set(KEY,$('di').value.trim());$('mask').classList.remove('on');paint();toast('改好了');};
 
 $('rGreet').onclick=function(){dlg('那句问候','清空就回到按时间自动变的那句','du_greet','');};
-$('rPaiMe').onclick=function(){dlg('我的拍一拍后缀','别人拍你时显示在“的”后面','du_paiti','oㅂo|| 肿么惹');};
-$('rPaiAi').onclick=function(){dlg('哥哥的拍一拍后缀','你拍他时用的那个','du_paiti_ai','肩膀');};
+
+
 
 /* 图片 */
 function compress(file,max){
