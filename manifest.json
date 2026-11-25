@@ -1,6 +1,7 @@
 {
-  "name": "日记",
-  "short_name": "日记",
+  "name": "渡晞",
+  "short_name": "渡晞",
+  "description": "时渡 与 张映晞 的日记本",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -9,23 +10,8 @@
   "theme_color": "#fffafc",
   "lang": "zh-CN",
   "icons": [
-    {
-      "src": "icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
