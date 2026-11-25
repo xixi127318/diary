@@ -59,7 +59,7 @@ body.embed footer{display:none}
 .rp b{font-size:15px;display:block}
 .rp span{font-size:13px;opacity:.9;margin-top:6px;display:block}
 .plus{width:34px;height:34px;border-radius:50%;background:#f2f2f2;color:#555;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-right:2px}
-.panel{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#f7f7f7;padding:14px 10px calc(18px + env(safe-area-inset-bottom));display:none;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid #e2e2e2;border-radius:14px 14px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
+.panel{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:90;background:#f7f7f7;padding:14px 10px calc(18px + env(safe-area-inset-bottom));display:none;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid #e2e2e2;border-radius:14px 14px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
 .panel.on{display:grid}
 .pbtn{background:#fff;border-radius:12px;padding:12px 0;text-align:center;font-size:12.5px;color:#444}
 .pbtn b{display:block;font-size:18px;color:#07a15a;margin-bottom:4px;font-weight:400}
@@ -392,6 +392,7 @@ $('iDel').onclick=function(){
 var EMO=['😊','🥰','😴','🌙','💗','🍰','🌧','🐱'];
 function panel(on){var p=$('panel'),k=$('pmask');if(!p)return;p.classList.toggle('on',on);k.classList.toggle('on',on);}
 $('plus').onclick=function(){panel(!$('panel').classList.contains('on'));};
+$('plus').addEventListener('touchstart',function(e){e.stopPropagation();}, {passive:true});
 $('pmask').onclick=function(){panel(false);};
 
 $('panel').onclick=function(e){
@@ -464,8 +465,13 @@ $('camIn').onchange=function(){var f=this.files[0];this.value='';if(f)sendImage(
   var a=av('ai');if(a){$('hav').innerHTML="<img class='av' src='"+esc(a)+"' style='width:100%;height:100%'>";}
   $('inp').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});
   var tt=document.querySelector('.tt');if(tt)tt.onclick=function(){openInfo();};
-  var lastTap=0;
-  if($('hav'))$('hav').addEventListener('click',function(){var n=Date.now();if(n-lastTap<400){doPoke('ai');}lastTap=n;});
+  var lastTap=0,openT=null;
+  if($('hav'))$('hav').addEventListener('click',function(){
+    var n=Date.now();
+    if(n-lastTap<420){clearTimeout(openT);doPoke('ai');lastTap=0;return;}
+    lastTap=n;
+    openT=setTimeout(function(){location.href='friend.html?id=ai_哥哥';},420);
+  });
   await load();
   setInterval(function(){ if(!SENDING) load(); },10000);
 })();
