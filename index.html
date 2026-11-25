@@ -379,5 +379,13 @@ document.querySelectorAll('.tabs .tb').forEach(t=>{t.onclick=()=>{
 const sp=localStorage.getItem('diary_pin');
 if(sp){PIN=sp;drawPin();doLogin();}
 </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
