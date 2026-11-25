@@ -34,6 +34,7 @@
   .brand{font-size:18px;letter-spacing:3px;color:var(--deep);font-weight:600}
   .brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--ink2);
     font-family:-apple-system,sans-serif;margin-top:3px;font-weight:400}
+  .upd{font-size:11.5px;color:#c8a2b3;padding:5px 9px;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:-apple-system,sans-serif;letter-spacing:1px}
   .go{font-size:11.5px;color:#c8a2b3;text-decoration:none;padding:4px 9px;border:1px solid var(--line);
     border-radius:12px;background:#fff;font-family:-apple-system,sans-serif;letter-spacing:1px}
   .who{margin-left:auto;font-size:12px;color:var(--deep);background:#fff;
@@ -158,6 +159,7 @@
       <div class="brand">渡晞<small>日记　时渡 与 张映晞</small></div>
       <a class="go" href="朋友圈.html">朋友圈 ›</a>
       <div class="who" id="who"></div>
+      <div class="upd" id="upd">更新</div>
     </div>
     <div class="tabs">
       <div class="tb on" data-who="all">两个人的</div>
@@ -550,6 +552,31 @@ document.querySelectorAll('.tabs .tb').forEach(t=>{
   }else{
     try{localStorage.removeItem('diary_pin');}catch(e){}
   }
+})();
+</script>
+<script>
+(function(){
+  var btn=document.getElementById('upd');
+  if(!btn) return;
+  var busy=false;
+  btn.addEventListener('click', async function(){
+    if(busy) return; busy=true;
+    btn.textContent='更新中';
+    try{
+      if('serviceWorker' in navigator){
+        var regs=await navigator.serviceWorker.getRegistrations();
+        for(var i=0;i<regs.length;i++){
+          try{ await regs[i].update(); }catch(e){}
+          if(regs[i].waiting) regs[i].waiting.postMessage({type:'SKIP_WAITING'});
+        }
+      }
+      if('caches' in window){
+        var ks=await caches.keys();
+        await Promise.all(ks.map(function(k){ return caches.delete(k); }));
+      }
+    }catch(e){}
+    location.replace(location.pathname+'?u='+Date.now());
+  });
 })();
 </script>
 <script>
