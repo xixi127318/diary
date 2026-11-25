@@ -75,6 +75,10 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
 .toast{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);background:rgba(90,69,80,.92);color:#fff5f8;font-size:13px;padding:10px 18px;border-radius:20px;opacity:0;transition:.25s;pointer-events:none;z-index:99;max-width:84vw;text-align:center;font-family:-apple-system,sans-serif;line-height:1.6}
 .toast.on{opacity:1}
 .sheet .amt{width:100%;border:1px solid #efd8e3;border-radius:12px;padding:11px 12px;font-size:15px;font-family:inherit;outline:none;background:#fff}
+a.app{text-decoration:none;color:inherit}
+.app em{text-decoration:none}
+.cd{margin-top:9px;font-size:12px;color:#a98d9b;font-family:-apple-system,sans-serif;letter-spacing:.5px;line-height:1.9}
+.cd b{color:#b5657f;font-weight:600}
 </style>
 </head>
 <body>
@@ -93,12 +97,14 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
   </div>
 
   <div class="hi" id="hi">今天也在这儿</div>
+  <div class="cd" id="cd"></div>
 
   <div class="grid">
     <a class="app" href="diary.html"><span class="ic c1">记</span><em>日记</em></a>
     <a class="app" href="wx.html"><span class="ic c3">微</span><em>微信</em></a>
     <a class="app" href="朋友圈.html"><span class="ic c2">圈</span><em>朋友圈</em></a>
     <a class="app" href="album.html"><span class="ic c4">相</span><em>相册</em></a>
+    <a class="app" href="camera.html"><span class="ic c5">拍</span><em>相机</em></a>
     <div class="app soon" data-s="好账簿还在做，等它好了我从这儿开给你看"><span class="ic c5">账</span><em>好账簿</em></div>
     <div class="app soon" data-s="睡前打卡还在做，先拿聊天当打卡吧"><span class="ic c6">睡</span><em>睡前打卡</em></div>
   </div>
@@ -115,7 +121,7 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
     <b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b>
     <b class="fn" data-act="clear">清空</b><b>0</b><b class="fn" data-act="del">删</b>
   </div>
-  <div class="bio" id="bio">指纹</div>
+  <div class="bio" id="bio">指纹 / 人脸</div>
 </div>
 
 <div class="sheet" id="sheetGreet">
@@ -165,6 +171,16 @@ function tick(){
   else{$('hi').innerHTML=(h<5?'夜里了，<b>该睡了</b>':h<11?'早，<b>今天也慢慢来</b>':h<14?'中午了，<b>吃饭了吗</b>':h<18?'下午了，<b>我在这儿</b>':h<23?'晚上了，<b>今天辛苦了</b>':'夜深了，<b>该睡了</b>');}
   var from=new Date(2026,6,10,0,0,0),n=Math.floor((d-from)/86400000)+1;
   $('days').textContent='一起第 '+n+' 天';
+  var marks=[['领证',9,9],['晞晞生日',3,18],['时渡生日',7,12],['认识',7,10]];
+  var best=null;
+  marks.forEach(function(m){
+    var y=d.getFullYear();
+    var t=new Date(y,m[1]-1,m[2],0,0,0);
+    if(t<new Date(y,d.getMonth(),d.getDate()))t=new Date(y+1,m[1]-1,m[2],0,0,0);
+    var left=Math.round((t-new Date(y,d.getMonth(),d.getDate()))/86400000);
+    if(!best||left<best.left)best={n:m[0],left:left,mo:m[1],da:m[2]};
+  });
+  if(best){var cd=$('cd'); if(cd) cd.innerHTML=best.n+'　距离 '+best.mo+'月'+best.da+'日 还有 <b>'+best.left+'</b> 天';}
 }
 tick();setInterval(tick,20000);
 
@@ -184,7 +200,7 @@ function boot(){
   var uid=sessionUid();
   if(uid){ unlocked(); return; }
   var last=null;try{last=localStorage.getItem('du_last_uid')}catch(e){}
-  if(last && localStorage.getItem('du_cred')){ $('bio').style.display='block'; }
+  if(last && localStorage.getItem('du_cred')){ $('bio').style.display='flex'; }
   else { $('bio').style.display='none'; }
 }
 boot();
