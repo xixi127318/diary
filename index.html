@@ -34,6 +34,8 @@
   .brand{font-size:18px;letter-spacing:3px;color:var(--deep);font-weight:600}
   .brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--ink2);
     font-family:-apple-system,sans-serif;margin-top:3px;font-weight:400}
+  .go{font-size:11.5px;color:#c8a2b3;text-decoration:none;padding:4px 9px;border:1px solid var(--line);
+    border-radius:12px;background:#fff;font-family:-apple-system,sans-serif;letter-spacing:1px}
   .who{margin-left:auto;font-size:12px;color:var(--deep);background:#fff;
     border:1px solid var(--pink);border-radius:16px;padding:5px 13px;cursor:pointer;
     box-shadow:0 2px 8px rgba(232,160,184,.16);font-family:-apple-system,sans-serif}
@@ -53,7 +55,7 @@
     background:linear-gradient(180deg,var(--pink),var(--lilac))}
   .card.mine::before{background:linear-gradient(180deg,#f9c8a8,#f6dcae)}
   .meta{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink2);
-    margin-bottom:10px;font-family:-apple-system,sans-serif}
+    margin-bottom:10px;font-family:-apple-system,sans-serif;flex-wrap:wrap}
   .tag{font-size:10.5px;padding:3px 10px;border-radius:10px;background:#fdeef4;
     color:#c07a96;letter-spacing:.5px}
   .tag.mine{background:#fff3e6;color:#c08f56}
@@ -65,6 +67,8 @@
     display:flex;align-items:center;gap:4px}
   .empty{text-align:center;padding:80px 24px;color:#c4a8b6;font-size:13.5px;
     line-height:2;font-family:-apple-system,sans-serif}
+  .rebtn{display:inline-block;margin-top:14px;padding:8px 20px;border-radius:14px;
+    background:#fff;border:1px solid var(--pink);color:#c07a96;font-size:13px;cursor:pointer}
 
   #detail{display:none;padding:20px 20px 30px}
   .back{font-size:13px;color:#c08fa4;padding:6px 0 18px;cursor:pointer;
@@ -76,7 +80,7 @@
   .dbody{font-size:15.5px;line-height:2.15;color:#6a4f5c;white-space:pre-wrap;
     word-break:break-word;letter-spacing:.3px}
   .delbtn{margin-left:auto;font-size:11px;color:#d19aae;border:1px solid #f5dde6;
-    padding:4px 11px;border-radius:10px;background:#fff}
+    padding:4px 11px;border-radius:10px;background:#fff;cursor:pointer}
   .delbtn:active{background:#fff0f5}
 
   .divide{display:flex;align-items:center;gap:12px;margin:32px 0 18px;color:#dcc2ce;
@@ -90,7 +94,7 @@
   .cmt .ch{font-size:11px;color:#c08fa4;margin-bottom:7px;display:flex;gap:8px;
     font-family:-apple-system,sans-serif;align-items:center}
   .cmt .cb{font-size:14px;line-height:1.9;color:#7d606c;white-space:pre-wrap}
-  .cdel{margin-left:auto;font-size:10.5px;color:#d6b3c0}
+  .cdel{margin-left:auto;font-size:10.5px;color:#d6b3c0;cursor:pointer}
   .cbox{margin-top:16px;display:flex;gap:9px;align-items:flex-end}
   .cbox textarea{flex:1;min-height:52px;max-height:160px;border:1px solid var(--pink);
     background:#fff;border-radius:16px;padding:12px 14px;font-size:14px;font-family:inherit;
@@ -135,14 +139,15 @@
   #pad{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;max-width:274px;margin:0 auto}
   #pad b{height:56px;border-radius:18px;background:#fff;display:flex;align-items:center;
     justify-content:center;font-size:20px;color:#8f6a7c;cursor:pointer;border:1px solid var(--line);
-    box-shadow:0 2px 8px rgba(232,160,184,.1);font-family:-apple-system,sans-serif}
+    box-shadow:0 2px 8px rgba(232,160,184,.1);font-family:-apple-system,sans-serif;
+    user-select:none;-webkit-user-select:none}
   #pad b:active{background:#fff0f6;transform:scale(.95)}
   #pad b.fn{font-size:13px;color:#c4a8b6}
 
   .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);
     background:rgba(90,69,80,.94);color:#fff5f8;font-size:13px;padding:11px 22px;
     border-radius:20px;opacity:0;transition:.28s;pointer-events:none;z-index:99;
-    white-space:nowrap;font-family:-apple-system,sans-serif}
+    max-width:86vw;text-align:center;line-height:1.6;font-family:-apple-system,sans-serif}
   .toast.on{opacity:1}
 </style>
 </head>
@@ -151,6 +156,7 @@
   <header id="hdr" style="display:none">
     <div class="toprow">
       <div class="brand">渡晞<small>日记　时渡 与 张映晞</small></div>
+      <a class="go" href="朋友圈.html">朋友圈 ›</a>
       <div class="who" id="who"></div>
     </div>
     <div class="tabs">
@@ -202,7 +208,6 @@
 </nav>
 
 <div class="toast" id="toast"></div>
-
 <script>
 const SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
 const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
@@ -210,181 +215,346 @@ const H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"applic
 const ENC={"ai_哥哥":"哥哥","user_晞晞":"晞晞"};
 const $=id=>document.getElementById(id);
 
-let ME=null,PIN="",FILTER="all",ALL=[],CMTS=[],CUR=null;
+let ME=null,PIN="",FILTER="all",ALL=[],CMTS=[],CUR=null,BUSY=false;
 
-function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');
-  clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1900);}
-function esc(s){return String(s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-function fmt(iso){const d=new Date(iso),n=new Date(),p=x=>String(x).padStart(2,'0');
-  return d.toDateString()===n.toDateString()?`今天 ${p(d.getHours())}:${p(d.getMinutes())}`
-    :`${d.getFullYear()}.${p(d.getMonth()+1)}.${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
-function who(uid){return ME&&uid===ME.id?'我':(ENC[uid]||'他');}
-function show(v){['list','detail','compose'].forEach(x=>$(x).style.display=x===v?'block':'none');
-  $('hdr').style.display=v==='list'?'block':'none';window.scrollTo(0,0);}
+function toast(t){
+  const e=$('toast');
+  e.textContent=t;
+  e.classList.add('on');
+  clearTimeout(e._t);
+  e._t=setTimeout(()=>e.classList.remove('on'),2200);
+}
+function esc(s){
+  return String(s==null?'':s).replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+}
 
-/* ---------- 登录 ---------- */
-$('pad').addEventListener('click',e=>{const b=e.target.closest('b');if(!b)return;
+/* [FIX-1] 时区：没带时区标记的 ISO 一律按 UTC 处理 */
+function parseDate(iso){
+  if(!iso)return new Date();
+  let s=String(iso);
+  if(!/[zZ]$|[+-]\d{2}:?\d{2}$/.test(s)){
+    s=s.replace(' ','T');
+    if(!/[zZ]$/.test(s)) s+='Z';
+  }
+  return new Date(s);
+}
+function fmt(iso){
+  const d=parseDate(iso);
+  if(!d||isNaN(d.getTime()))return '';
+  const n=new Date(),p=x=>String(x).padStart(2,'0');
+  const sameDay=d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()&&d.getDate()===n.getDate();
+  if(sameDay)return '今天 '+p(d.getHours())+':'+p(d.getMinutes());
+  if(d.getFullYear()===n.getFullYear())return p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+  return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes());
+}
+function who(uid){
+  if(!uid)return '谁';
+  if(ME&&uid===ME.id)return '我';
+  return ENC[uid]||'他';
+}
+function show(v){
+  ['list','detail','compose'].forEach(x=>{const el=$(x);if(el)el.style.display=(x===v?'block':'none');});
+  $('hdr').style.display=(v==='list'?'block':'none');
+  window.scrollTo(0,0);
+}
+
+/* [FIX-2] 统一请求封装：非 2xx 一律抛出可读错误 */
+async function sb(path,opt){
+  const r=await fetch(SB_URL+path,opt||{headers:H});
+  const txt=await r.text();
+  let data=null;
+  if(txt){try{data=JSON.parse(txt);}catch(e){data=txt;}}
+  if(!r.ok){
+    const msg=(data&&(data.message||data.hint||data.details))||txt||('HTTP '+r.status);
+    throw new Error(String(msg).slice(0,200)+' ('+r.status+')');
+  }
+  return data;
+}
+
+/* ================= 登录 ================= */
+$('pad').addEventListener('click',e=>{
+  const b=e.target.closest('b');if(!b)return;
   const a=b.dataset.act;
   if(a==='clear'){PIN="";drawPin();return;}
   if(a==='del'){PIN=PIN.slice(0,-1);drawPin();return;}
   if(PIN.length>=4)return;
   PIN+=b.textContent.trim();drawPin();
-  if(PIN.length===4)setTimeout(doLogin,160);});
-function drawPin(){document.querySelectorAll('#pinbox div').forEach((d,i)=>{
-  d.textContent=i<PIN.length?'●':'';d.classList.toggle('on',i===PIN.length);});}
+  if(PIN.length===4)setTimeout(doLogin,160);
+});
+function drawPin(){
+  document.querySelectorAll('#pinbox div').forEach((d,i)=>{
+    d.textContent=i<PIN.length?'●':'';
+    d.classList.toggle('on',i===PIN.length);
+  });
+}
 
+/* [FIX-3] 登录失败时连 localStorage 一起清，避免刷新后无限重试 */
 async function doLogin(){
+  if(BUSY)return;
+  BUSY=true;
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/diary_users?select=id,nickname&password=eq.${encodeURIComponent(PIN)}`,{headers:H});
-    const a=await r.json();
-    if(!Array.isArray(a)||!a.length){toast('密码不对哦');PIN="";drawPin();return;}
-    ME=a[0];localStorage.setItem('diary_pin',PIN);enter();
-  }catch(e){toast('连不上，看看网络');PIN="";drawPin();}
+    const a=await sb('/rest/v1/diary_users?select=id,nickname&password=eq.'+encodeURIComponent(PIN));
+    if(!Array.isArray(a)) throw new Error('diary_users 表读不到（检查 RLS）');
+    if(!a.length){
+      localStorage.removeItem('diary_pin');
+      toast('密码不对哦');
+      PIN="";drawPin();
+      return;
+    }
+    ME=a[0];
+    try{localStorage.setItem('diary_pin',PIN);}catch(e){}
+    enter();
+  }catch(e){
+    localStorage.removeItem('diary_pin');
+    toast('登录失败：'+String(e.message||e).slice(0,60));
+    PIN="";drawPin();
+  }finally{
+    BUSY=false;
+  }
 }
 function enter(){
-  $('login').style.display='none';$('nav').style.display='flex';
-  const w=$('who');w.textContent=ENC[ME.id]||ME.nickname;
-  w.onclick=()=>{if(confirm('要换个身份吗？（密码会清掉）')){localStorage.removeItem('diary_pin');location.reload();}};
+  $('login').style.display='none';
+  $('nav').style.display='flex';
+  const w=$('who');
+  w.textContent=ENC[ME.id]||ME.nickname||'我';
+  w.onclick=()=>{
+    if(confirm('要换个身份吗？（密码会清掉）')){
+      try{localStorage.removeItem('diary_pin');}catch(e){}
+      location.reload();
+    }
+  };
+  show('list');
   load();
 }
 
-/* ---------- 列表 ---------- */
+/* ================= 列表 ================= */
+/* [FIX-4] render / load 里 ALL、CMTS 全部 Array.isArray 兜底 */
 async function load(){
-  if(!ALL.length)$('list').innerHTML='<div class="empty">翻着……</div>';
+  $('list').innerHTML='<div class="empty">翻着……</div>';
   try{
-    const [e1,e2]=await Promise.all([
-      fetch(`${SB_URL}/rest/v1/diary_entries?select=id,user_id,title,content,weather,mood,created_at,private&order=created_at.desc&limit=300`,{headers:H}),
-      fetch(`${SB_URL}/rest/v1/diary_comments?select=id,entry_id,user_id,content,created_at&order=created_at.asc&limit=1000`,{headers:H})
+    const res=await Promise.all([
+      sb('/rest/v1/diary_entries?select=id,user_id,title,content,weather,mood,created_at,private&order=created_at.desc&limit=300'),
+      sb('/rest/v1/diary_comments?select=id,entry_id,user_id,content,created_at&order=created_at.asc&limit=1000')
     ]);
-    ALL=await e1.json();
-    CMTS=await e2.json();
+    ALL=Array.isArray(res[0])?res[0]:[];
+    CMTS=Array.isArray(res[1])?res[1]:[];
     render();
-  }catch(e){$('list').innerHTML='<div class="empty">连不上库，看看网络</div>';}
+  }catch(e){
+    console.error(e);
+    $('list').innerHTML='<div class="empty">连不上库：'+esc(String(e.message||e).slice(0,80))
+      +'<div class="rebtn" onclick="load()">再试一次</div></div>';
+  }
 }
 function render(){
   const box=$('list');
-  if(!Array.isArray(ALL)||!ALL.length){box.innerHTML='<div class="empty">还没有字。<br>去写第一句吧。</div>';return;}
-  const cnt={};CMTS.forEach(c=>{cnt[c.entry_id]=(cnt[c.entry_id]||0)+1;});
+  if(!Array.isArray(ALL))ALL=[];
+  if(!Array.isArray(CMTS))CMTS=[];
+  if(!ALL.length){
+    box.innerHTML='<div class="empty">还没有字。<br>去写第一句吧。</div>';
+    return;
+  }
+  const cnt={};
+  CMTS.forEach(c=>{if(c&&c.entry_id)cnt[c.entry_id]=(cnt[c.entry_id]||0)+1;});
   const posts=ALL.filter(it=>{
+    if(!it)return false;
     if(it.private&&it.user_id!==ME.id)return false;
     if(FILTER!=='all'&&it.user_id!==FILTER)return false;
     return true;
   });
-  if(!posts.length){box.innerHTML='<div class="empty">这边还没有字。</div>';return;}
+  if(!posts.length){
+    box.innerHTML='<div class="empty">这边还没有字。</div>';
+    return;
+  }
   box.innerHTML='';
   posts.forEach(it=>{
     const mine=it.user_id===ME.id;
-    const t=it.title&&it.title.trim()?it.title:(it.content||'').slice(0,18);
+    const title=(it.title&&it.title.trim())?it.title:((it.content||'').slice(0,18)||'（没有名字）');
     const n=cnt[it.id]||0;
-    const c=document.createElement('div');c.className='card'+(mine?' mine':'');
-    c.innerHTML=`<div class="meta"><span class="tag ${mine?'mine':''}">${who(it.user_id)}</span>
-      <span>${fmt(it.created_at)}</span>${it.mood?`<span>${it.mood}</span>`:''}</div>
-      <h3>${esc(t)}</h3><div class="prev">${esc((it.content||'').slice(0,150))}</div>
-      ${n?`<div class="cnum">💬 ${n} 条回应</div>`:''}`;
+    const c=document.createElement('div');
+    c.className='card'+(mine?' mine':'');
+    c.innerHTML='<div class="meta"><span class="tag '+(mine?'mine':'')+'">'+esc(who(it.user_id))+'</span>'
+      +'<span>'+esc(fmt(it.created_at))+'</span>'
+      +(it.mood?'<span>'+esc(it.mood)+'</span>':'')
+      +'</div><h3>'+esc(title)+'</h3>'
+      +'<div class="prev">'+esc((it.content||'').slice(0,150))+'</div>'
+      +(n?'<div class="cnum">💬 '+n+' 条回应</div>':'');
     c.onclick=()=>openDetail(it);
     box.appendChild(c);
   });
 }
 
-/* ---------- 详情 ---------- */
+/* ================= 详情 ================= */
 function openDetail(it){
+  if(!it)return;
   CUR=it;
   $('dTitle').textContent=(it.title&&it.title.trim())?it.title:'（没有名字）';
   const canDel=it.user_id===ME.id;
-  $('dMeta').innerHTML=`<span>${who(it.user_id)}</span><span>${fmt(it.created_at)}</span>`
-    +(it.mood?`<span>${it.mood}</span>`:'')
-    +(canDel?`<span class="delbtn" id="delEntry">删掉这篇</span>`:'');
+  $('dMeta').innerHTML='<span>'+esc(who(it.user_id))+'</span>'
+    +'<span>'+esc(fmt(it.created_at))+'</span>'
+    +(it.mood?'<span>'+esc(it.mood)+'</span>':'')
+    +(canDel?'<span class="delbtn" id="delEntry">删掉这篇</span>':'');
   $('dBody').textContent=it.content||'';
   $('cInput').value='';
-  if(canDel)$('delEntry').onclick=()=>delEntry(it);
+  if(canDel){
+    const d=$('delEntry');
+    if(d)d.onclick=ev=>{ev.stopPropagation();delEntry(it);};
+  }
   renderCmts();
   show('detail');
 }
 function renderCmts(){
   const box=$('cmts');
-  const list=CMTS.filter(c=>c.entry_id===CUR.id);
-  if(!list.length){box.innerHTML='<div style="font-size:12.5px;color:#c9a8b6;padding:0 2px 8px;font-family:-apple-system,sans-serif">还没有人回应。</div>';return;}
+  if(!CUR){box.innerHTML='';return;}
+  const list=CMTS.filter(c=>c&&c.entry_id===CUR.id);
+  if(!list.length){
+    box.innerHTML='<div style="font-size:12.5px;color:#c9a8b6;padding:0 2px 8px;font-family:-apple-system,sans-serif">还没有人回应。</div>';
+    return;
+  }
   box.innerHTML='';
   list.forEach(c=>{
     const mine=c.user_id===ME.id;
-    const d=document.createElement('div');d.className='cmt'+(mine?' mine':'');
-    d.innerHTML=`<div class="ch"><span>${who(c.user_id)}</span><span>${fmt(c.created_at)}</span>
-      ${mine?'<span class="cdel">删</span>':''}</div><div class="cb">${esc(c.content)}</div>`;
-    if(mine){const del=d.querySelector('.cdel');
-      del.onclick=ev=>{ev.stopPropagation();delCmt(c);};}
+    const d=document.createElement('div');
+    d.className='cmt'+(mine?' mine':'');
+    d.innerHTML='<div class="ch"><span>'+esc(who(c.user_id))+'</span>'
+      +'<span>'+esc(fmt(c.created_at))+'</span>'
+      +(mine?'<span class="cdel">删</span>':'')
+      +'</div><div class="cb">'+esc(c.content)+'</div>';
+    if(mine){
+      const del=d.querySelector('.cdel');
+      if(del)del.onclick=ev=>{ev.stopPropagation();delCmt(c);};
+    }
     box.appendChild(d);
   });
 }
 async function sendCmt(){
   const v=$('cInput').value.trim();
   if(!v){toast('还没写字呢');return;}
-  const b=$('cSend');b.disabled=true;
+  if(!CUR){toast('先打开一篇');return;}
+  const b=$('cSend');
+  if(b.disabled)return;
+  b.disabled=true;
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/diary_comments`,{method:'POST',
-      headers:{...H,'Prefer':'return=representation'},
-      body:JSON.stringify({entry_id:CUR.id,user_id:ME.id,content:v})});
-    if(!r.ok)throw new Error(await r.text());
-    const [row]=await r.json();
-    CMTS.push(row);$('cInput').value='';renderCmts();toast('回上了');
-  }catch(e){toast('没存上：'+(e.message||'').slice(0,50));}
-  finally{b.disabled=false;}
+    const row=await sb('/rest/v1/diary_comments',{
+      method:'POST',
+      headers:Object.assign({},H,{'Prefer':'return=representation'}),
+      body:JSON.stringify({entry_id:CUR.id,user_id:ME.id,content:v})
+    });
+    const r=Array.isArray(row)?row[0]:row;
+    if(r&&r.id){CMTS.push(r);}
+    else{CMTS.push({id:'tmp-'+Date.now(),entry_id:CUR.id,user_id:ME.id,content:v,created_at:new Date().toISOString()});}
+    $('cInput').value='';
+    renderCmts();
+    toast('回上了');
+  }catch(e){
+    toast('没存上：'+String(e.message||e).slice(0,50));
+  }finally{
+    b.disabled=false;
+  }
 }
+
+/* [FIX-5] 删评论：先本地删，失败要还原 */
 async function delCmt(c){
   if(!confirm('删掉这条回应？'))return;
+  const backup=CMTS.slice();
+  CMTS=CMTS.filter(x=>x.id!==c.id);
+  renderCmts();
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/diary_comments?id=eq.${c.id}`,{method:'DELETE',headers:H});
-    if(!r.ok)throw new Error(await r.text());
-    CMTS=CMTS.filter(x=>x.id!==c.id);renderCmts();toast('删了');
-  }catch(e){toast('删不掉：'+(e.message||'').slice(0,40));}
+    await sb('/rest/v1/diary_comments?id=eq.'+encodeURIComponent(c.id),{method:'DELETE',headers:H});
+    toast('删了');
+  }catch(e){
+    CMTS=backup;
+    renderCmts();
+    toast('删不掉：'+String(e.message||e).slice(0,40));
+  }
 }
+
+/* [FIX-6] 删日记：先删子表评论，再删主表，避免孤儿数据 */
 async function delEntry(it){
   if(!confirm('这篇要删掉吗？删了就找不回来了。'))return;
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/diary_entries?id=eq.${it.id}`,{method:'DELETE',headers:H});
-    if(!r.ok)throw new Error(await r.text());
+    try{
+      await sb('/rest/v1/diary_comments?entry_id=eq.'+encodeURIComponent(it.id),{method:'DELETE',headers:H});
+    }catch(e){
+      console.warn('删评论失败（可能没有 delete 权限），继续删正文',e);
+    }
+    await sb('/rest/v1/diary_entries?id=eq.'+encodeURIComponent(it.id),{method:'DELETE',headers:H});
     ALL=ALL.filter(x=>x.id!==it.id);
     CMTS=CMTS.filter(c=>c.entry_id!==it.id);
-    toast('删了');show('list');render();
-  }catch(e){toast('删不掉：'+(e.message||'').slice(0,40));}
+    CUR=null;
+    toast('删了');
+    show('list');
+    render();
+  }catch(e){
+    toast('删不掉：'+String(e.message||e).slice(0,40));
+  }
 }
 
-/* ---------- 写 ---------- */
+/* ================= 写 ================= */
 async function send(){
-  const t=$('cTitle').value.trim(),b0=$('cBody').value.trim();
-  if(!b0){toast('还没写字呢');return;}
-  const btn=$('sendBtn');btn.disabled=true;btn.textContent='写着……';
+  const t=$('cTitle').value.trim();
+  const body=$('cBody').value.trim();
+  if(!body){toast('还没写字呢');return;}
+  const btn=$('sendBtn');
+  if(btn.disabled)return;
+  btn.disabled=true;
+  const old=btn.textContent;
+  btn.textContent='写着……';
   try{
-    const r=await fetch(`${SB_URL}/rest/v1/diary_entries`,{method:'POST',
-      headers:{...H,'Prefer':'return=minimal'},
-      body:JSON.stringify({user_id:ME.id,title:t,content:b0})});
-    if(!r.ok)throw new Error(await r.text());
-    $('cTitle').value='';$('cBody').value='';toast('写进去了');
+    await sb('/rest/v1/diary_entries',{
+      method:'POST',
+      headers:Object.assign({},H,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({user_id:ME.id,title:t,content:body})
+    });
+    $('cTitle').value='';
+    $('cBody').value='';
+    toast('写进去了');
     document.querySelectorAll('nav div').forEach(d=>d.classList.toggle('on',d.dataset.tab==='list'));
-    ALL=[];show('list');load();
-  }catch(e){toast('没存上：'+(e.message||'').slice(0,50));}
-  finally{btn.disabled=false;btn.textContent='写进去';}
+    show('list');
+    await load();
+  }catch(e){
+    toast('没存上：'+String(e.message||e).slice(0,50));
+  }finally{
+    btn.disabled=false;
+    btn.textContent=old;
+  }
 }
 
 $('backBtn').onclick=()=>{show('list');render();};
 $('backBtn2').onclick=()=>{show('list');};
 $('sendBtn').onclick=send;
 $('cSend').onclick=sendCmt;
-$('nav').addEventListener('click',e=>{const d=e.target.closest('div[data-tab]');if(!d)return;
+
+$('nav').addEventListener('click',e=>{
+  const d=e.target.closest('div[data-tab]');if(!d)return;
   document.querySelectorAll('nav div').forEach(x=>x.classList.toggle('on',x===d));
-  if(d.dataset.tab==='list'){show('list');render();}else show('compose');});
-document.querySelectorAll('.tabs .tb').forEach(t=>{t.onclick=()=>{
-  document.querySelectorAll('.tabs .tb').forEach(x=>x.classList.remove('on'));
-  t.classList.add('on');FILTER=t.dataset.who;render();};});
+  if(d.dataset.tab==='list'){show('list');render();}
+  else show('compose');
+});
+document.querySelectorAll('.tabs .tb').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tabs .tb').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on');
+    FILTER=t.dataset.who;
+    render();
+  };
+});
 
-const sp=localStorage.getItem('diary_pin');
-if(sp){PIN=sp;drawPin();doLogin();}
+/* 自动登录 */
+(function(){
+  let sp=null;
+  try{sp=localStorage.getItem('diary_pin');}catch(e){}
+  if(sp&&/^\d{4}$/.test(sp)){
+    PIN=sp;
+    drawPin();
+    doLogin();
+  }else{
+    try{localStorage.removeItem('diary_pin');}catch(e){}
+  }
+})();
 </script>
-
 <script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
-  });
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 }
 </script>
 </body>
