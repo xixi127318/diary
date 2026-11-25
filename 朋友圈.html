@@ -95,7 +95,6 @@ nav div i{display:block;font-size:18px;font-style:normal;margin-bottom:3px}
       <div class="brand">渡晞<small>朋友圈　时渡 与 张映晞</small></div>
       <a class="go" href="index.html">⌂</a>
       <div class="who" id="who"></div>
-      <div class="upd" id="upd">更新</div>
       <div class="fresh" id="fresh">↻</div>
     </div>
   </header>
@@ -388,9 +387,13 @@ $('nav').addEventListener('click',e=>{const d=e.target.closest('div[data-tab]');
   setNav(d.dataset.tab);if(d.dataset.tab==='feed'){show('feed');renderFeed();}else show('compose');});
 
 (function boot(){
-  let sp=null;try{sp=localStorage.getItem('diary_pin');}catch(e){}
-  if(sp&&/^\d{4}$/.test(sp)){PIN=sp;drawPin();doLogin();}
-  else{drawPin();}
+  var u=null;try{u=sessionStorage.getItem('du_uid');}catch(e){}
+  var lg=document.getElementById('login');if(lg)lg.style.display='none';
+  if(!u){location.replace('index.html');return;}
+  fetch(SB_URL+'/rest/v1/diary_users?select=id,nickname&id=eq.'+encodeURIComponent(u),{headers:H})
+    .then(function(r){return r.json();})
+    .then(function(a){if(Array.isArray(a)&&a.length){ME=a[0];enter();}else{location.replace('index.html');}})
+    .catch(function(){location.replace('index.html');});
 })();
 </script>
 
