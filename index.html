@@ -100,7 +100,7 @@ a.app{text-decoration:none;color:inherit}
 <div class="scr">
   <div class="bar">
     <span id="clk">--:--</span>
-    <span class="r"><span class="ico" id="gear">设</span><span class="ico" id="upd">↻</span></span>
+
   </div>
 
   <div class="clock">
@@ -275,7 +275,7 @@ $('bio').onclick=bioUnlock;
 
 /* ---- 设置 ---- */
 function sheet(on){$('sheet').classList.toggle('on',on);$('mask').classList.toggle('on',on);}
-$('gear').onclick=function(){sheet(true);};
+
 $('mask').onclick=function(){sheet(false);};
 $('rWall').onclick=function(){$('fWall').click();};
 $('rAvMe').onclick=function(){$('fAvMe').click();};
@@ -331,18 +331,7 @@ $('fAvAi').onchange=async function(){
   try{var d=await compress(f,400);localStorage.setItem('du_av_ai',d);toast('换好了');}catch(e){toast('不行');}
 };
 
-/* ---- 更新 ---- */
-$('upd').onclick=async function(){
-  toast('去换新的了');
-  try{
-    if('serviceWorker' in navigator){
-      var regs=await navigator.serviceWorker.getRegistrations();
-      for(var i=0;i<regs.length;i++){try{await regs[i].update()}catch(e){}if(regs[i].waiting)regs[i].waiting.postMessage({type:'SKIP_WAITING'});}
-    }
-    if('caches' in window){var ks=await caches.keys();await Promise.all(ks.map(function(k){return caches.delete(k)}));}
-  }catch(e){}
-  location.replace(location.pathname+'?u='+Date.now());
-};
+
 
 document.querySelectorAll('.soon').forEach(function(el){el.addEventListener('click',function(){toast(el.dataset.s||'还在做');});});
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
@@ -363,7 +352,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     {id:'book',n:'好账簿',ch:'账',c:'c9',h:'',soon:'好账簿还在做'},
     {id:'sleep',n:'睡前打卡',ch:'睡',c:'c10',h:'',soon:'睡前打卡还在做'},
     {id:'store',n:'软件商店',ch:'店',c:'c6',h:'store.html'},
-    {id:'set',n:'设置',ch:'设',c:'c12',h:'',act:'set'}
+    {id:'set',n:'设置',ch:'设',c:'c12',h:'settings.html'}
   ];
   var $=function(id){return document.getElementById(id);};
   function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
@@ -415,7 +404,7 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     if(editing){e.preventDefault();return;}
     var a=byId(el.dataset.id);if(!a)return;
     if(a.soon){e.preventDefault();toast(a.soon);return;}
-    if(a.act==='set'){e.preventDefault();$('gear').click();return;}
+
   });
 
   $('done').onclick=function(){editing=false;render();};
