@@ -127,6 +127,26 @@ function localGet(){try{var a=JSON.parse(localStorage.getItem('du_chat')||'[]');
 function localPush(m){var a=localGet();a.push(m);try{localStorage.setItem('du_chat',JSON.stringify(a.slice(-200)))}catch(e){}}
 
 /* ---------- 渲染 ---------- */
+var _lastPoke={me:0,ai:0},_pokeBound=false;
+function bindPoke(){
+  if(_pokeBound)return;_pokeBound=true;
+  var box=$('msgs');
+  box.addEventListener('click',function(e){
+    var a=e.target.closest('.av');if(!a||!a.dataset.poke)return;
+    var k=a.dataset.poke,n=Date.now();
+    if(n-_lastPoke[k]<420){doPoke(k);}
+    _lastPoke[k]=n;
+  });
+}
+function doPoke(k){
+  var suf=null;try{suf=localStorage.getItem('du_paiti')}catch(e){}
+  if(!suf)suf='肩膀';
+  var who=(k==='ai')?'哥哥':'自己';
+  toast('你拍了拍'+who);
+  var b=$('msgs');b.style.transition='transform .12s';b.style.transform='translateX(-6px)';
+  setTimeout(function(){b.style.transform='none';},140);
+  push({id:'p'+Date.now(),from_id:ME,to_id:PEER,content:'拍了拍'+who+' 的 '+suf,created_at:new Date().toISOString()});
+}
 function render(){
   var box=$('msgs');
   if(!MSGS.length){box.innerHTML="<div class='tm'>还没有一句话。<br>说第一句，它就在。</div>";return;}
@@ -137,11 +157,12 @@ function render(){
     if(day!==lastDay){lastDay=day;html+="<div class='tm'>"+day+"</div>";}
     var mine=(m.from_id!==PEER);
     var a=av(mine?'me':'ai');
-    var avHtml=a?"<img class='av' src='"+esc(a)+"'>":"<div class='av'>"+(mine?'晞':'渡')+"</div>";
+    var avHtml=a?"<img class='av' data-poke='"+(mine?"me":"ai")+"' src='"+esc(a)+"'>":"<div class='av' data-poke='"+(mine?"me":"ai")+"'>"+(mine?'晞':'渡')+"</div>";
     html+="<div class='rowm"+(mine?' me':'')+"'>"+avHtml+"<div class='bub'>"+esc(m.content)+"</div></div>";
   });
   box.innerHTML=html;
   box.scrollTop=box.scrollHeight;
+  bindPoke();
 }
 
 /* ---------- 读 ---------- */
