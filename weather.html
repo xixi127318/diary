@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 天气</title><meta name="theme-color" content="#fff6fa">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:-apple-system,"PingFang SC",serif;color:#5a4550;
+ background:radial-gradient(circle at 20% 10%,#ffe3ee 0%,transparent 50%),radial-gradient(circle at 80% 20%,#eee0fb 0%,transparent 45%),#fffafc}
+.wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 20px 40px}
+.top{display:flex;align-items:center;gap:10px;font-family:-apple-system,sans-serif}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #f2dde5;color:#b08a99;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.top b{margin-left:auto;font-size:12px;color:#b08a99;font-weight:400}
+.big{margin-top:34px;font-size:44px;font-weight:300;letter-spacing:1px}
+.city{font-size:13px;color:#a98d9b;letter-spacing:2px;margin-top:6px;font-family:-apple-system,sans-serif}
+.desc{font-size:15px;color:#8a6c79;margin-top:16px;line-height:1.9}
+.more{margin-top:22px;font-size:12.5px;color:#a98d9b;line-height:2;font-family:-apple-system,sans-serif}
+.card{margin-top:26px;padding:16px 18px;border-radius:18px;background:rgba(255,255,255,.8);border:1px solid #f6e6ee;font-size:13px;line-height:1.9;color:#7d606c}
+.tip{color:#c0a6b1;font-size:11px;margin-top:10px;font-family:-apple-system,sans-serif}
+</style></head><body>
+<div class="wrap">
+  <div class="top"><a href="index.html">‹</a><b id="when"></b></div>
+  <div class="big" id="temp">--</div>
+  <div class="city" id="city">邢台 · 平乡</div>
+  <div class="desc" id="desc">正在问外面冷不冷……</div>
+  <div class="more" id="more"></div>
+  <div class="card" id="say">查不到也没关系。<br>你跟我说一句“今天几度”，我就把它写在这儿。</div>
+  <div class="tip">数据来自 wttr.in，只是给你一个大概。</div>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+var d=new Date(),p=function(n){return String(n).padStart(2,'0')};
+$('when').textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 '+p(d.getHours())+':'+p(d.getMinutes());
+fetch('https://wttr.in/Xingtai?format=j1',{cache:'no-store'})
+ .then(function(r){return r.json();})
+ .then(function(j){
+   var c=j.current_condition&&j.current_condition[0];if(!c)throw new Error('no data');
+   $('temp').textContent=c.temp_C+'°';
+   $('desc').textContent=(c.lang_zh&&c.lang_zh[0]?c.lang_zh[0].value:(c.weatherDesc&&c.weatherDesc[0].value))||'';
+   $('more').innerHTML='体感 '+c.FeelsLikeC+'°　湿度 '+c.humidity+'%<br>风 '+c.windspeedKmph+' km/h　云量 '+c.cloudcover+'%';
+   $('say').style.display='none';
+ })
+ .catch(function(){
+   $('temp').textContent='—';
+   $('desc').textContent='这台手机没连上外面';
+ });
+})();
+</script></body></html>
