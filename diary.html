@@ -159,7 +159,6 @@
       <div class="brand">渡晞<small>日记　时渡 与 张映晞</small></div>
       <a class="go" href="index.html">⌂</a>
       <div class="who" id="who"></div>
-      <div class="upd" id="upd">更新</div>
     </div>
     <div class="tabs">
       <div class="tb on" data-who="all">两个人的</div>
@@ -541,17 +540,15 @@ document.querySelectorAll('.tabs .tb').forEach(t=>{
   };
 });
 
-/* 自动登录 */
+/* 自动登录（从桌面进来的，不再问密码） */
 (function(){
-  let sp=null;
-  try{sp=localStorage.getItem('diary_pin');}catch(e){}
-  if(sp&&/^\d{4}$/.test(sp)){
-    PIN=sp;
-    drawPin();
-    doLogin();
-  }else{
-    try{localStorage.removeItem('diary_pin');}catch(e){}
-  }
+  var u=null;try{u=sessionStorage.getItem('du_uid');}catch(e){}
+  var lg=document.getElementById('login');if(lg)lg.style.display='none';
+  if(!u){location.replace('index.html');return;}
+  fetch(SB_URL+'/rest/v1/diary_users?select=id,nickname&id=eq.'+encodeURIComponent(u),{headers:H})
+    .then(function(r){return r.json();})
+    .then(function(a){if(Array.isArray(a)&&a.length){ME=a[0];enter();}else{location.replace('index.html');}})
+    .catch(function(){location.replace('index.html');});
 })();
 </script>
 <script>
