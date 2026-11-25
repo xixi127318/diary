@@ -59,7 +59,7 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
 #pad b{height:54px;border-radius:16px;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;font-size:19px;color:#8f6a7c;border:1px solid rgba(247,214,230,.9);font-family:-apple-system,sans-serif}
 #pad b:active{background:#fff0f6;transform:scale(.95)}
 #pad b.fn{font-size:12px;color:#c4a8b6}
-.bio{margin-top:auto;font-size:12.5px;color:#b5657f;letter-spacing:2px;font-family:-apple-system,sans-serif;padding:12px 20px;border-radius:18px;border:1px solid #f3d3e0;background:rgba(255,255,255,.8)}
+.bio{margin-top:auto;margin-bottom:calc(30px + env(safe-area-inset-bottom));touch-action:manipulation;font-size:13px;color:#b5657f;letter-spacing:2px;font-family:-apple-system,sans-serif;padding:12px 20px;border-radius:18px;border:1px solid #f3d3e0;background:rgba(255,255,255,.8)}
 
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:118;background:#fffafc;border-top-left-radius:24px;border-top-right-radius:24px;
  padding:18px 20px calc(24px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .26s;
@@ -114,7 +114,7 @@ a.app{text-decoration:none;color:inherit}
   <div class="grid" id="grid"></div>
 
 
-  <div class="foot">渡晞 · 时渡 与 张映晞<br><span id="days">—</span><br><span style="color:#d3bcc7;font-size:10px">版本 1.2.13</span></div>
+  <div class="foot">渡晞 · 时渡 与 张映晞<br><span id="days">—</span></div>
 </div>
 
 <div class="lock" id="lock">
@@ -269,9 +269,17 @@ async function bioUnlock(){
     var uid=localStorage.getItem('du_last_uid');
     if(uid){try{sessionStorage.setItem('du_uid',uid);}catch(e){}}
     unlocked();toast('哥哥在');
-  }catch(e){toast('没认出来，输密码吧');}
+  }catch(e){
+    var n=e&&e.name;
+    if(n==='NotAllowedError')toast('手没放上去，或者超时了，再按一次');
+    else if(n==='NotSupportedError')toast('这个浏览器不认指纹，用密码吧');
+    else toast('没认出来（'+(n||'')+'），输密码也一样');
+  }
 }
-$('bio').onclick=bioUnlock;
+var bioBusy=false;
+function tryBio(){ if(bioBusy)return; bioBusy=true; bioUnlock().finally(function(){ setTimeout(function(){bioBusy=false;},600); }); }
+$('bio').addEventListener('click',tryBio);
+$('bio').addEventListener('touchend',function(e){e.preventDefault();tryBio();}, {passive:false});
 
 /* ---- 设置 ---- */
 function sheet(on){$('sheet').classList.toggle('on',on);$('mask').classList.toggle('on',on);}
@@ -352,6 +360,13 @@ if('serviceWorker' in navigator){window.addEventListener('load',function(){navig
     {id:'book',n:'好账簿',ch:'账',c:'c9',h:'',soon:'好账簿还在做'},
     {id:'sleep',n:'睡前打卡',ch:'睡',c:'c10',h:'',soon:'睡前打卡还在做'},
     {id:'store',n:'软件商店',ch:'店',c:'c6',h:'store.html'},
+    {id:'contacts',n:'联系人',ch:'联',c:'c1',h:'contacts.html'},
+    {id:'sms',n:'短信',ch:'信',c:'c3',h:'sms.html'},
+    {id:'anni',n:'纪念日',ch:'念',c:'c8',h:'anniversary.html'},
+    {id:'notes',n:'备忘录',ch:'忘',c:'c10',h:'notes.html'},
+    {id:'music',n:'网易云',ch:'歌',c:'c5',h:'outside.html?to=music'},
+    {id:'taobao',n:'淘宝',ch:'淘',c:'c2',h:'outside.html?to=taobao'},
+    {id:'browser',n:'浏览器',ch:'浏',c:'c11',h:'browser.html'},
     {id:'set',n:'设置',ch:'设',c:'c12',h:'settings.html'}
   ];
   var $=function(id){return document.getElementById(id);};
