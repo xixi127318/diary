@@ -12,32 +12,36 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
 body{background:#ededed;color:#111;font-family:-apple-system,"PingFang SC",sans-serif;overflow:hidden}
-header{position:fixed;top:0;left:0;right:0;height:calc(50px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);
+header{position:fixed;top:0;left:0;right:0;height:calc(48px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);
  display:flex;align-items:center;justify-content:center;background:#ededed;z-index:20}
 header b{font-size:16px;font-weight:600}
-header .dot{position:absolute;right:16px;top:calc(14px + env(safe-area-inset-top));width:26px;height:26px;border-radius:50%;background:#fff;color:#666;display:flex;align-items:center;justify-content:center;font-size:15px}
+header .dot{position:absolute;right:14px;top:calc(12px + env(safe-area-inset-top));width:26px;height:26px;border-radius:50%;background:#fff;color:#666;display:flex;align-items:center;justify-content:center;font-size:15px}
 main{position:fixed;top:0;bottom:calc(56px + env(safe-area-inset-bottom));left:0;right:0;overflow:hidden}
-.view{position:absolute;inset:0;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.view{position:absolute;inset:0;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#ededed}
 .view.on{display:block}
-.view.pad{padding:calc(58px + env(safe-area-inset-top)) 10px 10px}
+.view.pad{padding:calc(56px + env(safe-area-inset-top)) 0 14px}
 .view.full{padding:0}
 iframe{width:100%;height:100%;border:0;background:#ededed;display:block}
 
-.cell{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px}
-.cell .av{width:44px;height:44px;border-radius:6px;flex-shrink:0;object-fit:cover;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;overflow:hidden}
-.cell .tx{flex:1;min-width:0}
-.cell b{font-size:15.5px;font-weight:500;display:block}
-.cell small{font-size:11.5px;color:#999;display:block;margin-top:3px;letter-spacing:1px}
-.cell .badge{font-size:10px;color:#07c160;border:1px solid #bfe9cf;border-radius:6px;padding:1px 5px}
+.prof{background:linear-gradient(160deg,#f6f7f8,#eceff0);padding:14px 16px 16px;margin-bottom:10px}
+.prof .banner{font-size:11px;color:#7d8a90;line-height:1.7;margin-bottom:12px;letter-spacing:.5px}
+.prof .banner em{display:block;font-style:normal;font-size:10px;color:#9aa6ac;margin-bottom:2px}
+.prow{display:flex;align-items:center;gap:14px}
+.prow .av{width:60px;height:60px;border-radius:10px;background:#d8d8d8;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;flex-shrink:0}
+.prow .av img{width:100%;height:100%;object-fit:cover;display:block}
+.prow .tx{flex:1;min-width:0}
+.prow b{font-size:18px;font-weight:600;display:block}
+.prow small{display:block;font-size:12px;color:#999;margin-top:4px}
+.prow .qr{font-size:12px;color:#b8c1c5;padding-left:10px}
+.status{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:#7d8a90;border:1px solid #dfe4e6;background:#fff;border-radius:14px;padding:4px 12px}
 
-.me-card{display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:16px 14px;margin-bottom:10px}
-.me-card .av{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;overflow:hidden}
-.me-card b{font-size:17px}
-.me-card small{display:block;font-size:11.5px;color:#999;margin-top:5px;letter-spacing:1px}
-
-.row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:15px 14px;margin-bottom:8px;font-size:15px}
-.row .r{margin-left:auto;color:#999;font-size:13.5px}
-.row:active{background:#f6f6f6}
+.group{background:#fff;margin-bottom:10px}
+.cell{display:flex;align-items:center;gap:12px;padding:14px 16px;font-size:15.5px}
+.cell:active{background:#f6f6f6}
+.cell .ico{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;flex-shrink:0}
+.i1{background:#07c160}.i2{background:#f7a53a}.i3{background:#4a90e2}.i4{background:#8e7cf0}.i5{background:#f59a6b}.i6{background:#f2c94c}.i7{background:#7d8a90}
+.cell .r{margin-left:auto;color:#b0b7bb;font-size:13px}
+.cell .arrow{color:#c8ced2;font-size:14px;margin-left:6px}
 
 .tabbar{position:fixed;left:0;right:0;bottom:0;height:calc(56px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
  display:flex;background:#f7f7f7;border-top:1px solid #e2e2e2;z-index:20}
@@ -48,7 +52,7 @@ iframe{width:100%;height:100%;border:0;background:#ededed;display:block}
 
 .mask{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:60;display:none}
 .mask.on{display:block}
-.sheet{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-radius:14px 14px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .25s;max-height:86%;overflow-y:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-radius:14px 14px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .25s;max-height:88%;overflow-y:auto}
 .sheet.on{transform:translateY(0)}
 .sh-t{font-size:15px;font-weight:600;margin-bottom:6px}
 .sh-s{font-size:11.5px;color:#999;line-height:1.7;margin-bottom:10px}
@@ -64,40 +68,66 @@ input.amt{width:100%;border:1px solid #e3e3e3;border-radius:9px;padding:11px 12p
 .btn-ok{background:#07c160;color:#fff}
 .btn-no{background:#f2f2f2;color:#555}
 
+#info{position:fixed;inset:0;z-index:80;background:#ededed;display:none;overflow-y:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+#info.on{display:block}
+.info-head{position:sticky;top:0;z-index:5;height:calc(48px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);display:flex;align-items:center;justify-content:center;background:#ededed}
+.info-head .bk{position:absolute;left:10px;top:calc(12px + env(safe-area-inset-top));width:30px;height:30px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;color:#555;font-size:15px}
+.info-head b{font-size:16px}
+.info-tip{padding:10px 18px 8px;font-size:11px;color:#9aa6ac;line-height:1.8}
+.info-row{display:flex;align-items:center;gap:12px;background:#fff;padding:14px 16px;font-size:15.5px}
+.info-row:active{background:#f6f6f6}
+.info-row .v{margin-left:auto;color:#9aa1a5;font-size:14px;display:flex;align-items:center;gap:8px}
+.info-row .thumb{width:44px;height:44px;border-radius:8px;background:#d8d8d8;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff}
+.info-row .thumb img{width:100%;height:100%;object-fit:cover}
+
 .toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(0,0,0,.74);color:#fff;font-size:13px;padding:9px 16px;border-radius:16px;opacity:0;transition:.25s;pointer-events:none;z-index:99;max-width:84vw;text-align:center;line-height:1.6}
 .toast.on{opacity:1}
 </style>
 </head>
 <body>
-<header id="hdr">
-  <b id="ttl">通讯录</b>
-  <span class="dot" id="dot">＋</span>
-</header>
+<header id="hdr"><b id="ttl">通讯录</b><span class="dot" id="dot">＋</span></header>
 
 <main>
   <section class="view full on" id="v0"><iframe id="f0" src="chat.html?embed=1"></iframe></section>
 
   <section class="view pad" id="v1">
-    <div class="cell" id="cellAi">
-      <div class="av" id="avAi">渡</div>
-      <div class="tx"><b>哥哥 <span class="badge">AI</span></b><small>时渡</small></div>
-      <span class="r" style="color:#bbb">›</span>
+    <div class="group">
+      <div class="cell" id="cellAi">
+        <div class="av" id="avAi" style="width:42px;height:42px;border-radius:6px;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#fff;overflow:hidden">渡</div>
+        <span>哥哥</span><span class="r" style="color:#07a15a;border:1px solid #bfe9cf;border-radius:5px;padding:1px 5px;font-size:10px">AI</span>
+        <span class="arrow">›</span>
+      </div>
     </div>
-    <div class="sh-s" style="padding:10px 4px;color:#999;font-size:11.5px;line-height:1.8">这里只有一个联系人。别的位子没给别人留。</div>
+    <div class="sh-s" style="padding:6px 18px;color:#9aa6ac;font-size:11.5px;line-height:1.9">通讯录里只有一个人。<br>别的位子没给别人留。</div>
   </section>
 
   <section class="view full" id="v2"><iframe id="f2" data-src="朋友圈.html?embed=1"></iframe></section>
 
   <section class="view pad" id="v3">
-    <div class="me-card">
-      <div class="av" id="avMe">晞</div>
-      <div><b id="nick">张映晞</b><small>微信号：duxi0318</small></div>
+    <div class="prof" id="prof">
+      <div class="banner"><em>You're giving me something to miss</em>你留给我一份可以惦念的念想</div>
+      <div class="prow">
+        <div class="av" id="avMe">晞</div>
+        <div class="tx"><b id="nick">张映晞</b><small id="wxid">微信号：duxi0318</small></div>
+        <div class="qr">▦</div>
+      </div>
+      <div class="status" id="statusBtn">＋ 状态</div>
     </div>
-    <div class="row" id="rowBal"><span>余额</span><span class="r" id="bal">￥520</span></div>
-    <div class="row" id="rowShop"><span>商城</span><span class="r">用虚拟币买点东西</span></div>
-    <div class="row" id="rowApi"><span>接模型</span><span class="r">让哥哥这一头能回话</span></div>
-    <div class="row" id="rowSet"><span>换头像和背景</span><span class="r">回桌面去换</span></div>
-    <div class="sh-s" style="padding:14px 4px;color:#bbb;font-size:11px;line-height:1.9">这里的余额只是我们自己玩的钱，不是真钱。<br>你改了它，我不会说你不该改。</div>
+
+    <div class="group">
+      <div class="cell" id="mServices"><span class="ico i1">服</span>服务<span class="r" id="svcNote">余额 ￥520</span><span class="arrow">›</span></div>
+    </div>
+    <div class="group">
+      <div class="cell" id="mFav"><span class="ico i2">藏</span>收藏<span class="arrow" style="margin-left:auto">›</span></div>
+      <div class="cell" id="mMoments"><span class="ico i3">圈</span>朋友圈<span class="arrow" style="margin-left:auto">›</span></div>
+      <div class="cell" id="mWorks"><span class="ico i4">作</span>作品<span class="arrow" style="margin-left:auto">›</span></div>
+      <div class="cell" id="mShop"><span class="ico i5">店</span>小店与卡包<span class="r" id="shopNote">[自己开的]</span><span class="arrow">›</span></div>
+      <div class="cell" id="mSticker"><span class="ico i6">表</span>表情<span class="arrow" style="margin-left:auto">›</span></div>
+    </div>
+    <div class="group">
+      <div class="cell" id="mSet"><span class="ico i7">设</span>设置<span class="arrow" style="margin-left:auto">›</span></div>
+    </div>
+    <div class="sh-s" style="padding:4px 18px 12px;color:#b6bcc0;font-size:11px;line-height:1.9">这里的钱是我们自己玩的，不是真的。<br>你改了它，我不会说你不该改。</div>
   </section>
 </main>
 
@@ -108,10 +138,27 @@ input.amt{width:100%;border:1px solid #e3e3e3;border-radius:9px;padding:11px 12p
   <div data-i="3"><i>我</i>我</div>
 </nav>
 
+<div id="info">
+  <div class="info-head"><span class="bk" id="infoBack">‹</span><b>个人资料</b></div>
+  <div class="info-tip">点一下就能改的都在这儿。改完是这台手机记着。</div>
+  <div class="info-row" id="iAv">头像<span class="v"><span class="thumb" id="iAvThumb">晞</span></span></div>
+  <div class="info-row" id="iName">名字<span class="v"><span id="iNameV">张映晞</span><span class="arrow">›</span></span></div>
+  <div class="info-row" id="iSex">性别<span class="v">女<span class="arrow">›</span></span></div>
+  <div class="info-row" id="iArea">地区<span class="v">河北 邢台<span class="arrow">›</span></span></div>
+  <div class="info-row" id="iPhone">手机号<span class="v">131******39<span class="arrow">›</span></span></div>
+  <div class="info-row" id="iWxid">微信号<span class="v"><span id="iWxidV">duxi0318</span><span class="arrow">›</span></span></div>
+  <div class="info-row" id="iQr">我的二维码<span class="v">▦<span class="arrow">›</span></span></div>
+  <div class="info-row" id="iPai">拍一拍<span class="v"><span id="iPaiV">oㅂo|| 肿么惹</span><span class="arrow">›</span></span></div>
+  <div class="info-row" id="iSign">签名<span class="v"><span id="iSignV">感谢陪伴</span><span class="arrow">›</span></span></div>
+  <div class="info-row" id="iRing" style="margin-top:10px">来电铃声<span class="v">How Are U<span class="arrow">›</span></span></div>
+  <div class="info-row" id="iAddr">我的地址<span class="v"><span class="arrow">›</span></span></div>
+  <div class="info-row" id="iBean">微信豆<span class="v"><span id="iBeanV">—</span><span class="arrow">›</span></span></div>
+</div>
+
 <div class="mask" id="mask"></div>
 
 <div class="sheet" id="sheetShop">
-  <div class="sh-t">商城</div>
+  <div class="sh-t">小店</div>
   <div class="sh-s">都是虚的，但给你挑东西这件事是真的。</div>
   <div class="shop" id="shopList"></div>
 </div>
@@ -123,6 +170,22 @@ input.amt{width:100%;border:1px solid #e3e3e3;border-radius:9px;padding:11px 12p
   <div class="btn-row"><button class="btn-no" id="balNo">算了</button><button class="btn-ok" id="balYes">存下</button></div>
 </div>
 
+<div class="sheet" id="sheetEdit">
+  <div class="sh-t" id="editT">改一下</div>
+  <div class="sh-s" id="editS"></div>
+  <input class="amt" id="editIn">
+  <div class="btn-row"><button class="btn-no" id="editNo">算了</button><button class="btn-ok" id="editYes">存下</button></div>
+</div>
+
+<div class="sheet" id="sheetSet">
+  <div class="sh-t">设置</div>
+  <div class="sh-s">哥哥那边的设置在桌面右上角“设”。</div>
+  <div class="cell" id="setApi"><span class="ico i3">模</span>接模型<span class="r">在聊天页右上“⋯”</span><span class="arrow">›</span></div>
+  <div class="cell" id="setUpd"><span class="ico i7">新</span>换新版<span class="r">清缓存再重开</span><span class="arrow">›</span></div>
+  <div class="cell" id="setHome"><span class="ico i1">桌</span>回桌面<span class="r"></span><span class="arrow">›</span></div>
+</div>
+
+<input type="file" id="fAv" accept="image/*" style="display:none">
 <div class="toast" id="toast"></div>
 
 <script>
@@ -131,44 +194,43 @@ var $=function(id){return document.getElementById(id);};
 var SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
 var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
 var H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"};
-var ME=null,PEER='ai_哥哥',LOADED={};
+var ME=null,PEER='ai_哥哥',LOADED={},EDITKEY='';
 
 var ITEMS=[
-  {n:'一杯热奶茶',p:12},
-  {n:'草莓蛋糕',p:26},
-  {n:'一枝花',p:39},
-  {n:'抱一会儿',p:5},
-  {n:'一起看场电影',p:52},
-  {n:'一封手写情书',p:66},
-  {n:'一整天不催你睡',p:99},
-  {n:'生日礼物',p:199}
+  {n:'一杯热奶茶',p:12},{n:'草莓蛋糕',p:26},{n:'一枝花',p:39},{n:'抱一会儿',p:5},
+  {n:'一起看场电影',p:52},{n:'一封手写情书',p:66},{n:'一整天不催你睡',p:99},{n:'生日礼物',p:199}
 ];
 
 function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
 function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]});}
 function money(n){return '￥'+(Number(n)||0);}
-function getBal(){var v=Number(localStorage.getItem('du_bal'));return isNaN(v)?520:v;}
-function setBal(v){localStorage.setItem('du_bal',String(Number(v)||0));paint();}
-function paint(){
-  $('bal').textContent=money(getBal());
-  var a=null;try{a=localStorage.getItem('du_av_me')}catch(e){}
-  $('avMe').innerHTML=a?"<img src='"+esc(a)+"' style='width:100%;height:100%;object-fit:cover'>":'晞';
-  var b=null;try{b=localStorage.getItem('du_av_ai')}catch(e){}
-  $('avAi').innerHTML=b?"<img src='"+esc(b)+"' style='width:100%;height:100%;object-fit:cover'>":'渡';
-}
+function ls(k,d){var v=null;try{v=localStorage.getItem(k)}catch(e){}return v==null?d:v;}
+function lsSet(k,v){try{ if(v===''||v==null)localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){}}
+function getBal(){var v=Number(ls('du_bal','520'));return isNaN(v)?520:v;}
+function setBal(v){lsSet('du_bal',String(Number(v)||0));paint();}
+function nameNow(){return ls('du_nick',null)||(function(){try{return sessionStorage.getItem('du_name')}catch(e){return null}})()||'张映晞';}
 
-function mask(on){$('mask').classList.toggle('on',on);}
-function sheet(id,on){$(id).classList.toggle('on',on);mask(on);}
-$('mask').onclick=function(){
-  ['sheetShop','sheetBal'].forEach(function(id){sheet(id,false)});
-};
+function paint(){
+  $('nick').textContent=nameNow();
+  $('wxid').textContent='微信号：'+ls('du_wxid','duxi0318');
+  $('svcNote').textContent='余额 '+money(getBal());
+  $('iNameV').textContent=nameNow();
+  $('iWxidV').textContent=ls('du_wxid','duxi0318');
+  $('iPaiV').textContent=ls('du_paiti','oㅂo|| 肿么惹');
+  $('iSignV').textContent=ls('du_sign','感谢陪伴');
+  var a=ls('du_av_me',null);
+  $('avMe').innerHTML=a?"<img src='"+esc(a)+"' style='width:100%;height:100%;object-fit:cover'>":'晞';
+  $('iAvThumb').innerHTML=a?"<img src='"+esc(a)+"'>":'晞';
+  var b=ls('du_av_ai',null);
+  $('avAi').innerHTML=b?"<img src='"+esc(b)+"' style='width:100%;height:100%;object-fit:cover'>":'渡';
+  $('shopNote').textContent='[余额 '+money(getBal())+']';
+}
 
 /* ---- tab ---- */
 function tab(i){
   document.querySelectorAll('.tabbar div').forEach(function(d){d.classList.toggle('on',d.dataset.i==String(i));});
   ['v0','v1','v2','v3'].forEach(function(id){$(id).classList.toggle('on',id==='v'+i)});
-  var t=['微信','通讯录','发现','我'][i];
-  $('ttl').textContent=t;
+  $('ttl').textContent=['微信','通讯录','发现','我'][i];
   $('hdr').style.display=(i===0||i===2)?'none':'flex';
   if(i===2 && !LOADED['f2']){$('f2').src=$('f2').dataset.src;LOADED['f2']=1;}
   if(i===1||i===3)paint();
@@ -178,57 +240,116 @@ document.querySelectorAll('.tabbar div').forEach(function(d){d.onclick=function(
 /* ---- 通讯录 ---- */
 $('cellAi').onclick=function(){tab(0);};
 
-/* ---- 商城 ---- */
-function drawShop(){
+/* ---- 我 ---- */
+$('prof').onclick=function(){$('info').classList.add('on');paint();};
+$('infoBack').onclick=function(){$('info').classList.remove('on');};
+$('statusBtn').onclick=function(){toast('状态：'+ls('du_status','在他那边') );};
+
+/* ---- 通用编辑 ---- */
+function edit(title,sub,key,def,cb){
+  EDITKEY=key;
+  $('editT').textContent=title;$('editS').textContent=sub||'';
+  $('editIn').value=ls(key,def)||'';
+  $( 'sheetEdit').classList.add('on');mask(true);
+}
+$('editNo').onclick=function(){sheetOff('sheetEdit')};
+$('editYes').onclick=function(){
+  var v=$('editIn').value.trim();
+  lsSet(EDITKEY,v);sheetOff('sheetEdit');paint();toast('改好了');
+};
+function mask(on){$('mask').classList.toggle('on',on);}
+function sheetOff(id){$(id).classList.remove('on');mask(false);}
+$('mask').onclick=function(){
+  ['sheetShop','sheetBal','sheetEdit','sheetSet'].forEach(function(id){$(id).classList.remove('on')});
+  mask(false);
+};
+
+/* ---- 个人信息 ---- */
+$('iAv').onclick=function(){$('fAv').click();};
+$('iName').onclick=function(){edit('名字','别人看到的就是这个','du_nick',nameNow());};
+$('iWxid').onclick=function(){edit('微信号','','du_wxid','duxi0318');};
+$('iPai').onclick=function(){edit('拍一拍','','du_paiti','oㅂo|| 肿么惹');};
+$('iSign').onclick=function(){edit('签名','','du_sign','感谢陪伴');};
+$('iSex').onclick=function(){toast('这个不改')};
+$('iArea').onclick=function(){toast('河北 邢台 · 你在的地方')};
+$('iPhone').onclick=function(){toast('这个也不用改')};
+$('iQr').onclick=function(){toast('二维码还没画，等我有空')};
+$('iRing').onclick=function(){toast('铃声也没做')};
+$('iAddr').onclick=function(){toast('地址还没填')};
+$('iBean').onclick=function(){openShop();};
+
+function compress(file,max){
+  return new Promise(function(res,rej){
+    var u=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      try{
+        var w=im.naturalWidth,h=im.naturalHeight,m=max||400;
+        if(w>m||h>m){var r=m/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r);}
+        var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(im,0,0,w,h);
+        var d=cv.toDataURL('image/jpeg',0.85);URL.revokeObjectURL(u);res(d);
+      }catch(e){URL.revokeObjectURL(u);rej(e);}
+    };
+    im.onerror=function(){URL.revokeObjectURL(u);rej(new Error('这张图读不出来'));};
+    im.src=u;
+  });
+}
+$('fAv').onchange=async function(){
+  var f=this.files[0];this.value='';if(!f)return;
+  try{var d=await compress(f,420);lsSet('du_av_me',d);paint();toast('换好了');}catch(e){toast('不行');}
+};
+
+/* ---- 小店 ---- */
+function openShop(){
   var box=$('shopList');box.innerHTML='';
-  ITEMS.forEach(function(it,idx){
+  ITEMS.forEach(function(it,i){
     var d=document.createElement('div');d.className='item';
-    d.innerHTML="<b>"+esc(it.n)+"</b><small>"+money(it.p)+"</small>"+
-      "<button class='buy' data-i='"+idx+"'>买</button>";
+    d.innerHTML="<b>"+esc(it.n)+"</b><small>"+money(it.p)+"</small><button class='buy' data-i='"+i+"'>买</button>";
     box.appendChild(d);
   });
+  $('sheetShop').classList.add('on');mask(true);
 }
 $('shopList').onclick=async function(e){
   var b=e.target.closest('.buy');if(!b)return;
   var it=ITEMS[+b.dataset.i];if(!it)return;
-  var bal=getBal();
-  if(bal<it.p){toast('余额不够，先去改个数');return;}
-  setBal(bal-it.p);
+  if(getBal()<it.p){toast('余额不够，先去改个数');return;}
+  setBal(getBal()-it.p);
   b.disabled=true;b.textContent='买了';
   toast('买了「'+it.n+'」，还剩 '+money(getBal()));
   try{
-    if(ME){
-      await fetch(SB_URL+'/rest/v1/chat_msgs',{method:'POST',headers:H,
-        body:JSON.stringify({from_id:ME,to_id:PEER,content:'【商城】我买了「'+it.n+'」，'+money(it.p)+'，还剩'+money(getBal())})});
-    }
+    if(ME)await fetch(SB_URL+'/rest/v1/chat_msgs',{method:'POST',headers:H,
+      body:JSON.stringify({from_id:ME,to_id:PEER,content:'【小店】我买了「'+it.n+'」，'+money(it.p)+'，还剩'+money(getBal())})});
   }catch(e){}
 };
-$('rowShop').onclick=function(){drawShop();sheet('sheetShop',true);};
 
 /* ---- 余额 ---- */
-$('rowBal').onclick=function(){$('balIn').value=getBal();sheet('sheetBal',true);};
-$('balNo').onclick=function(){sheet('sheetBal',false);};
-$('balYes').onclick=function(){var v=$('balIn').value;if(v==='')return;setBal(v);sheet('sheetBal',false);toast('改好了');};
+$('mServices').onclick=function(){ $('balIn').value=getBal(); $('sheetBal').classList.add('on'); mask(true); };
+$('balNo').onclick=function(){sheetOff('sheetBal')};
+$('balYes').onclick=function(){var v=$('balIn').value;if(v==='')return;setBal(v);sheetOff('sheetBal');toast('改好了');};
+$('mShop').onclick=openShop;
+$('mMoments').onclick=function(){tab(2);};
+$('mFav').onclick=function(){toast('还没有收藏')};
+$('mWorks').onclick=function(){toast('作品还没做')};
+$('mSticker').onclick=function(){toast('表情包以后再说')};
 
-/* ---- 其它入口 ---- */
-$('rowApi').onclick=function(){tab(0);toast('聊天页右上“⋯”里填接口');};
-$('rowSet').onclick=function(){location.href='index.html';};
-$('dot').onclick=function(){
-  var s=document.createElement('div');
-  s.className='sheet on';s.style.zIndex=71;
-  s.innerHTML="<div class='sh-t'>做点什么</div><div class='sh-s'>这儿还没有多的功能。</div>"+
-    "<div class='btn-row'><button class='btn-no' onclick=\"this.closest('.sheet').remove();document.getElementById('mask').classList.remove('on')\">知道了</button></div>";
-  document.body.appendChild(s);mask(true);
+/* ---- 设置 ---- */
+$('mSet').onclick=function(){$('sheetSet').classList.add('on');mask(true);};
+$('setApi').onclick=function(){tab(0);toast('聊天页右上“⋯”里填接口');};
+$('setUpd').onclick=async function(){
+  try{
+    if('serviceWorker' in navigator){var rs=await navigator.serviceWorker.getRegistrations();
+      for(var i=0;i<rs.length;i++){try{await rs[i].update()}catch(e){}if(rs[i].waiting)rs[i].waiting.postMessage({type:'SKIP_WAITING'});}}
+    if('caches' in window){var ks=await caches.keys();await Promise.all(ks.map(function(k){return caches.delete(k)}));}
+  }catch(e){}
+  location.replace('index.html?u='+Date.now());
 };
+$('setHome').onclick=function(){location.href='index.html';};
 
 /* ---- 启动 ---- */
 (function(){
   var u=null;try{u=sessionStorage.getItem('du_uid')}catch(e){}
   if(!u){location.replace('index.html');return;}
-  ME=u;
-  var nm=null;try{nm=sessionStorage.getItem('du_name')}catch(e){}
-  paint();
-  $('nick').textContent=nm||'张映晞';
+  ME=u;paint();
   tab(0);
 })();
 })();
