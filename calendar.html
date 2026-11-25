@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 日历</title><meta name="theme-color" content="#fff6fa">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:-apple-system,"PingFang SC",serif;color:#5a4550;
+ background:radial-gradient(circle at 15% 8%,#ffe9f2 0%,transparent 45%),radial-gradient(circle at 85% 20%,#efe4fb 0%,transparent 42%),#fffafc}
+.wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 18px 40px}
+.top{display:flex;align-items:center;gap:10px}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #f2dde5;color:#b08a99;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.hd{display:flex;align-items:center;gap:14px;margin:26px 4px 10px;font-family:-apple-system,sans-serif}
+.hd b{font-size:20px;font-weight:500}
+.hd .sp{margin-left:auto;color:#b08a99;font-size:13px;letter-spacing:2px}
+.hd button{border:none;background:#fff;border:1px solid #f2dde5;color:#b5657f;width:30px;height:30px;border-radius:50%;font-size:15px}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);font-size:11px;color:#b6a0ab;text-align:center;font-family:-apple-system,sans-serif;margin-bottom:6px}
+.mo{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mo div{height:42px;display:flex;align-items:center;justify-content:center;font-size:14px;border-radius:10px;color:#6a4f5c;font-family:-apple-system,sans-serif}
+.mo div.today{background:linear-gradient(135deg,#ffd6e4,#efd9ff);color:#9c4a68;font-weight:600}
+.mo div.mark{position:relative}
+.mo div.mark::after{content:'';position:absolute;bottom:6px;width:4px;height:4px;border-radius:50%;background:#e8a0b8}
+.mo div.empty{color:transparent}
+.list{margin-top:24px}
+.li{display:flex;align-items:center;gap:12px;padding:13px 16px;background:#fff;border:1px solid #f6e6ee;border-radius:14px;margin-bottom:8px;font-family:-apple-system,sans-serif}
+.li b{font-size:14px;font-weight:500}
+.li .r{margin-left:auto;color:#b5657f;font-size:13px}
+</style></head><body>
+<div class="wrap">
+  <div class="top"><a href="index.html">‹</a></div>
+  <div class="hd"><button id="prev">‹</button><b id="mtitle"></b><button id="next">›</button><span class="sp" id="today"></span></div>
+  <div class="wk"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+  <div class="mo" id="mo"></div>
+  <div class="list" id="list"></div>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+var cur=new Date();
+var marks=[[3,18,'晞晞生日'],[7,12,'时渡生日'],[9,9,'领证'],[7,10,'认识']];
+function daysLeft(m,d){
+  var n=new Date(),y=n.getFullYear(),t=new Date(y,m-1,d);
+  if(t<new Date(y,n.getMonth(),n.getDate()))t=new Date(y+1,m-1,d);
+  return Math.round((t-new Date(y,n.getMonth(),n.getDate()))/86400000);
+}
+function draw(){
+  var y=cur.getFullYear(),m=cur.getMonth();
+  $('mtitle').textContent=y+'年 '+(m+1)+'月';
+  var n=new Date(),td=n.getDate(),tm=n.getMonth(),ty=n.getFullYear();
+  $('today').textContent=(td)+'日';
+  var first=new Date(y,m,1),off=(first.getDay()+6)%7,last=new Date(y,m+1,0).getDate();
+  var g=$('mo');g.innerHTML='';
+  for(var i=0;i<off;i++){var e=document.createElement('div');e.className='empty';g.appendChild(e);}
+  for(var d=1;d<=last;d++){
+    var c=document.createElement('div');c.textContent=d;
+    if(y===ty&&m===tm&&d===td)c.className='today';
+    else if(marks.some(function(x){return x[0]===(m+1)&&x[1]===d;}))c.className='mark';
+    g.appendChild(c);
+  }
+  var L=$('list');L.innerHTML='';
+  marks.map(function(x){return {n:x[2],m:x[0],d:x[1],left:daysLeft(x[0],x[1])};})
+   .sort(function(a,b){return a.left-b.left;})
+   .forEach(function(x){
+     var r=document.createElement('div');r.className='li';
+     r.innerHTML='<b>'+x.n+'</b><span>'+x.m+'月'+x.d+'日</span><span class="r">'+(x.left===0?'就是今天':x.left+' 天')+'</span>';
+     L.appendChild(r);
+   });
+}
+$('prev').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()-1,1);draw();};
+$('next').onclick=function(){cur=new Date(cur.getFullYear(),cur.getMonth()+1,1);draw();};
+draw();
+})();
+</script></body></html>
