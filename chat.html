@@ -77,6 +77,8 @@ body.embed footer{display:none}
   <input id="apiKey" placeholder="sk-...">
   <label>模型名</label>
   <input id="apiModel" placeholder="deepseek-chat">
+  <label>中转地址（浏览器直连常被跨域挡住，填了就走中转）</label>
+  <input id="apiProxy" placeholder="https://xxxx.functions.supabase.co/chatrelay">
   <label>它是谁（写给模型的设定）</label>
   <textarea class="sel" id="apiPrompt"></textarea>
   <div class="sh-btn"><button id="closeApi">算了</button><button id="saveApi">存起来</button></div>
@@ -183,10 +185,13 @@ async function ask(){
   var last=MSGS.slice(-16);
   last.forEach(function(m){ if(m.content.length>800)return; hist.push({role:(m.from_id===PEER?'assistant':'user'),content:m.content}); });
   if(hist.length<2)hist.push({role:'user',content:'（她还没说话）'});
-  var r=await fetch(base.replace(/\/+$/,'')+'/chat/completions',{
-    method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-    body:JSON.stringify({model:model,messages:hist,temperature:0.85})
-  });
+  var proxy=cfg('api_proxy');
+  var url = proxy || (base.replace(/\/+$/,'')+'/chat/completions');
+  var hdrs = proxy
+    ? {'Content-Type':'application/json','x-api-key':key}
+    : {'Content-Type':'application/json','Authorization':'Bearer '+key};
+  var payload = proxy ? {base:base,model:model,messages:hist} : {model:model,messages:hist,temperature:0.85};
+  var r=await fetch(url,{method:'POST',headers:hdrs,body:JSON.stringify(payload)});
   var t=await r.text();
   var d=null;try{d=JSON.parse(t)}catch(e){}
   if(!r.ok){throw new Error((d&&(d.error&&d.error.message||d.message))||('HTTP '+r.status));}
@@ -209,7 +214,9 @@ $('send').onclick=async function(){
       toast('还没接模型：点右上角“⋯”填接口');
     }
   }catch(e){
-    MSGS.push({id:'e'+Date.now(),from_id:PEER,to_id:me,content:'（模型那边没回话：'+e.message+'）',created_at:new Date().toISOString()});
+    var why=e.message;
+    if(why==='Failed to fetch')why='跨域被浏览器挡了——去“⋯”里填中转地址';
+    MSGS.push({id:'e'+Date.now(),from_id:PEER,to_id:me,content:'（模型那边没回话：'+why+'）',created_at:new Date().toISOString()});
     render();
   }
   SENDING=false;$('send').disabled=false;
@@ -220,6 +227,7 @@ function sheet(on){$('sheet').classList.toggle('on',on);$('mask').classList.togg
 $('gear').onclick=function(){
   $('apiBase').value=cfg('api_base');$('apiKey').value=cfg('api_key');
   $('apiModel').value=cfg('api_model');$('apiPrompt').value=cfg('api_prompt')||DEF_PROMPT;
+  $('apiProxy').value=cfg('api_proxy');
   sheet(true);
 };
 $('mask').onclick=function(){sheet(false);};
@@ -229,6 +237,7 @@ $('saveApi').onclick=function(){
   setCfg('api_key',$('apiKey').value.trim());
   setCfg('api_model',$('apiModel').value.trim());
   setCfg('api_prompt',$('apiPrompt').value.trim());
+  setCfg('api_proxy',$('apiProxy').value.trim());
   sheet(false);toast('存好了');
 };
 
@@ -241,6 +250,21 @@ $('saveApi').onclick=function(){
   $('sub').textContent='时渡';
   var a=av('ai');if(a){$('hav').innerHTML="<img class='av' src='"+esc(a)+"' style='width:100%;height:100%'>";}
   $('inp').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});
+  var lastTap=0;
+  function poke(){
+    poked();
+  }
+  function poked(){
+    if(!ME)return;
+    toast('你拍了拍哥哥');
+    var box=$('msgs');
+    box.style.transition='transform .12s';
+    box.style.transform='translateX(-6px)';
+    setTimeout(function(){box.style.transform='none';},140);
+    var suffix=null;try{suffix=localStorage.getItem('du_paiti')}catch(e){}
+    push({id:'p'+Date.now(),from_id:ME,to_id:PEER,content:'拍了拍哥哥'+(suffix?(' 的 '+suffix):''),created_at:new Date().toISOString()});
+  }
+  if($('hav'))$('hav').addEventListener('click',function(){var n=Date.now();if(n-lastTap<400){poked();}lastTap=n;});
   await load();
   setInterval(function(){ if(!SENDING) load(); },10000);
 })();
