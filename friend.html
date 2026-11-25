@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 他的朋友圈</title><meta name="theme-color" content="#ffffff">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100vh;background:#fff;font-family:-apple-system,"PingFang SC",sans-serif;color:#111}
+.top{position:fixed;top:0;left:0;right:0;z-index:10;height:calc(48px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);display:flex;align-items:center;background:linear-gradient(180deg,rgba(0,0,0,.18),rgba(0,0,0,0))}
+.top a{margin-left:12px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.28);color:#fff;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.cover{height:42vh;min-height:210px;max-height:320px;background:linear-gradient(150deg,#cfd6da,#e6ebee);position:relative;display:flex;align-items:flex-end;padding:14px 16px 12px}
+.cover .cav{width:60px;height:60px;border-radius:8px;background:#c3c9cd;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;border:1px solid rgba(255,255,255,.8)}
+.cover .cav img{width:100%;height:100%;object-fit:cover}
+.cover .cnm{margin-left:12px;margin-bottom:34px;color:#fff;font-size:15px;text-shadow:0 1px 4px rgba(0,0,0,.3)}
+.wrap{padding:0 0 40px}
+.sec{padding:10px 16px;font-size:12px;color:#9a9a9a}
+.post{padding:14px 16px;border-bottom:1px solid #f2f2f2;display:flex;gap:10px}
+.post .pav{width:40px;height:40px;border-radius:6px;background:#dfe3e4;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+.post .pav img{width:100%;height:100%;object-fit:cover}
+.post .col{flex:1;min-width:0}
+.post .nm{font-size:13.5px;color:#576b95;margin-bottom:4px}
+.post .tx{font-size:15px;line-height:1.85;white-space:pre-wrap;word-break:break-word;color:#222}
+.imgs{display:grid;gap:4px;margin-top:8px}
+.imgs.g2{grid-template-columns:1fr 1fr}
+.imgs img{width:100%;display:block;border-radius:4px;object-fit:cover;background:#f2f2f2}
+.imgs.g2 img{height:32vw;max-height:150px}
+.empty{text-align:center;padding:60px 24px;color:#b0b0b0;font-size:13.5px;line-height:2}
+</style></head><body>
+<div class="top"><a href="javascript:history.back()">‹</a></div>
+<div class="cover">
+  <div class="cav" id="cav">渡</div>
+  <div class="cnm" id="cnm">哥哥</div>
+</div>
+<div class="wrap"><div class="sec" id="sec">他的朋友圈</div><div id="list"></div></div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+var SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
+var H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY};
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m];});}
+var av=null;try{av=localStorage.getItem('du_av_ai')}catch(e){}
+if(av){$('cav').innerHTML="<img src='"+av+"'>";}
+var nm=null;try{nm=localStorage.getItem('du_note')}catch(e){}
+$('cnm').textContent=nm||'哥哥';
+(async function(){
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/diary_moments?select=id,content,images,created_at,private&user_id=eq.ai_哥哥&order=created_at.desc&limit=60',{headers:H});
+    var rows=await r.json();
+    if(!Array.isArray(rows))throw new Error('读不出来');
+    if(!rows.length){$('list').innerHTML="<div class='empty'>他还没发过。<br>等他发了，这里就有了。</div>";return;}
+    $('list').innerHTML='';
+    rows.forEach(function(m){
+      var v=m.images;if(typeof v==='string'){try{v=JSON.parse(v)}catch(e){v=[]}}
+      if(!Array.isArray(v))v=[];
+      var d=document.createElement('div');d.className='post';
+      var pav=av?"<img src='"+esc(av)+"'>":'渡';
+      var imgs='';
+      if(v.length){imgs="<div class='imgs "+(v.length===1?'':'g2')+"'>"+v.slice(0,4).map(function(u){return "<img loading='lazy' src='"+esc(u)+"'>";}).join('')+"</div>";}
+      d.innerHTML="<div class='pav'>"+pav+"</div><div class='col'><div class='nm'>"+(nm||'哥哥')+"</div>"+
+        (m.content?"<div class='tx'>"+esc(m.content)+"</div>":"")+imgs+"</div>";
+      $('list').appendChild(d);
+    });
+  }catch(e){
+    $('list').innerHTML="<div class='empty'>翻不开："+esc(e.message)+"</div>";
+  }
+})();
+})();
+</script></body></html>
