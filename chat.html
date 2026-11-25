@@ -193,19 +193,22 @@ function bindPoke(){
   box.addEventListener('click',function(e){
     var a=e.target.closest('.av');if(!a||!a.dataset.poke)return;
     var k=a.dataset.poke,n=Date.now();
-    if(n-_lastPoke[k]<420){doPoke(k);}
+    if(n-_lastPoke[k]<420){doPoke(k,a);}
     _lastPoke[k]=n;
   });
 }
-function doPoke(k){
+function doPoke(k,el){
   var suf=null;
   try{ suf=localStorage.getItem(k==='ai'?'du_paiti_ai':'du_paiti'); }catch(e){}
   if(!suf)suf='肩膀';
   var who=(k==='ai')?'哥哥':'自己';
   toast('你拍了拍'+who);
-  var avs=document.querySelectorAll("[data-poke='"+k+"']");
-  for(var i=0;i<avs.length;i++){avs[i].classList.add('poked');}
-  setTimeout(function(){for(var i=0;i<avs.length;i++)avs[i].classList.remove('poked');},500);
+  var avs=[];
+  if(el)avs.push(el);
+  document.querySelectorAll("[data-poke='"+k+"']").forEach(function(a){avs.push(a);});
+  if(k==='ai'){var h=$('hav');if(h)avs.push(h);}
+  avs.forEach(function(a){a.classList.add('poked');});
+  setTimeout(function(){avs.forEach(function(a){a.classList.remove('poked');});},500);
   push({id:'p'+Date.now(),from_id:ME,to_id:PEER,content:'拍了拍'+who+' 的 '+suf,created_at:new Date().toISOString()});
 }
 function bubbleHTML(s){
@@ -468,7 +471,7 @@ $('camIn').onchange=function(){var f=this.files[0];this.value='';if(f)sendImage(
   var lastTap=0,openT=null;
   if($('hav'))$('hav').addEventListener('click',function(){
     var n=Date.now();
-    if(n-lastTap<420){clearTimeout(openT);doPoke('ai');lastTap=0;return;}
+    if(n-lastTap<420){clearTimeout(openT);doPoke('ai',$('hav'));lastTap=0;return;}
     lastTap=n;
     openT=setTimeout(function(){location.href='friend.html?id=ai_哥哥';},420);
   });
