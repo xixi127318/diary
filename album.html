@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 相册</title>
+<meta name="theme-color" content="#fffafc">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--pink:#f7d6e0;--deep:#b5657f;--ink:#5a4550;--ink2:#8f7883;--line:#f2dde5}
+body{margin:0;font-family:-apple-system,"PingFang SC","Songti SC",serif;color:var(--ink);min-height:100vh;
+ background:radial-gradient(circle at 12% 8%,#ffe9f2 0%,transparent 45%),radial-gradient(circle at 88% 22%,#efe4fb 0%,transparent 42%),#fffafc;background-attachment:fixed}
+.wrap{max-width:680px;margin:0 auto;padding:0 0 40px}
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;padding:14px 18px 12px;
+ background:linear-gradient(180deg,rgba(255,250,252,.96) 70%,rgba(255,250,252,.6));backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.brand{font-size:17px;letter-spacing:3px;color:var(--deep);font-weight:600}
+.brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--ink2);font-family:-apple-system,sans-serif;margin-top:3px;font-weight:400}
+.go{margin-left:auto;font-size:11.5px;color:#c8a2b3;text-decoration:none;padding:5px 9px;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:-apple-system,sans-serif}
+.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:14px}
+.grid img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;background:#f6ecf0;display:block}
+.empty{text-align:center;padding:90px 26px;color:#c4a8b6;font-size:13.5px;line-height:2;font-family:-apple-system,sans-serif}
+#view{position:fixed;inset:0;background:rgba(30,22,28,.94);display:none;align-items:center;justify-content:center;z-index:120;padding:16px}
+#view img{max-width:100%;max-height:100%;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">渡晞<small>相册　时渡 与 张映晞</small></div>
+    <a class="go" href="index.html">⌂</a>
+  </header>
+  <main id="led"></main>
+</div>
+<div id="view"><img id="big" alt=""></div>
+<script>
+var SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
+var H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY};
+var led=document.getElementById('led'), view=document.getElementById('view'), big=document.getElementById('big');
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m];});}
+async function go(){
+  led.innerHTML="<div class='empty'>翻着……</div>";
+  try{
+    var r=await fetch(SB_URL+"/rest/v1/diary_moments?select=id,images,created_at,private&order=created_at.desc&limit=200",{headers:H});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    var rows=await r.json();
+    if(!Array.isArray(rows))throw new Error('库回了看不懂的东西');
+    var pics=[];
+    rows.forEach(function(m){
+      var v=m.images;
+      if(typeof v==='string'){try{v=JSON.parse(v);}catch(e){v=[];}}
+      if(Array.isArray(v))v.forEach(function(u){if(u)pics.push({u:u,t:m.created_at});});
+    });
+    if(!pics.length){led.innerHTML="<div class='empty'>还没有照片。<br>去朋友圈发一张，这里就有了。</div>";return;}
+    led.innerHTML="";
+    var g=document.createElement('div');g.className='grid';
+    pics.forEach(function(p){
+      var im=document.createElement('img');
+      im.loading='lazy';im.src=p.u;im.alt='';
+      im.onclick=function(){view.style.display='flex';big.src=p.u;};
+      g.appendChild(im);
+    });
+    led.appendChild(g);
+  }catch(e){led.innerHTML="<div class='empty'>翻不开："+esc(e.message)+"</div>";}
+}
+view.onclick=function(){view.style.display='none';big.src='';};
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+go();
+</script>
+</body>
+</html>
