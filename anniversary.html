@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>纪念日</title><meta name="theme-color" content="#fffafc">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% 8%,#ffe9f2 0%,transparent 45%),#fffafc;font-family:-apple-system,"PingFang SC",sans-serif;color:#333}
+.wrap{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px 90px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #f2dde5;color:#b08a99;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.top b{font-size:16px;margin-right:auto}
+.big{background:linear-gradient(150deg,#ffd6e4,#efd9ff);border-radius:16px;padding:18px;color:#8a4a63;margin-bottom:14px}
+.big small{font-size:12px;opacity:.8}
+.big b{display:block;font-size:34px;font-weight:300;margin-top:6px}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:13px 14px;margin-bottom:8px;border:1px solid #f7e7ee}
+.row b{font-size:14.5px}
+.row small{display:block;color:#a9a9a9;font-size:11.5px;margin-top:3px}
+.row .r{margin-left:auto;color:#b5657f;font-size:13px}
+.add{position:fixed;right:16px;bottom:calc(24px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:#b5657f;color:#fff;font-size:26px;border:none}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">‹</a><b>纪念日</b></div>
+<div class="big"><small id="bn">最近的一个</small><b id="bd">—</b></div>
+<div id="list"></div>
+</div>
+<button class="add" id="add">＋</button>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+var BASE=[[7,10,'认识'],[9,9,'领证'],[3,18,'晞晞生日'],[7,12,'时渡生日']];
+function extra(){try{return JSON.parse(localStorage.getItem('du_anni')||'[]')}catch(e){return []}}
+function save(a){try{localStorage.setItem('du_anni',JSON.stringify(a))}catch(e){}}
+function left(m,d){
+  var n=new Date(),y=n.getFullYear(),t=new Date(y,m-1,d);
+  if(t<new Date(y,n.getMonth(),n.getDate()))t=new Date(y+1,m-1,d);
+  return Math.round((t-new Date(y,n.getMonth(),n.getDate()))/86400000);
+}
+function draw(){
+  var all=BASE.concat(extra());
+  var L=$('list');L.innerHTML='';
+  var list=all.map(function(x){return {n:x[2],m:x[0],d:x[1],l:left(x[0],x[1])};}).sort(function(a,b){return a.l-b.l;});
+  list.forEach(function(x){
+    var d=document.createElement('div');d.className='row';
+    d.innerHTML="<div><b>"+x.n+"</b><small>"+x.m+"月"+x.d+"日</small></div><span class='r'>"+(x.l===0?'就是今天':x.l+' 天')+"</span>";
+    L.appendChild(d);
+  });
+  if(list.length){$('bn').textContent=list[0].n;$('bd').textContent=(list[0].l===0?'就是今天':list[0].l+' 天');}
+}
+$('add').onclick=function(){
+  var s=prompt('名字，比如“第一次见面”');if(!s)return;
+  var md=prompt('几月几号，写成 9-9 这样');if(!md)return;
+  var p=md.split(/[-./]/);if(p.length<2)return;
+  var m=+p[0],d=+p[1];if(!m||!d||m>12||d>31)return;
+  var a=extra();a.push([m,d,s]);save(a);draw();
+};
+draw();
+})();
+</script></body></html>
