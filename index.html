@@ -34,7 +34,7 @@ body{margin:0;font-family:-apple-system,"PingFang SC","Songti SC","Noto Serif CJ
 .hi img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid #fff;box-shadow:0 2px 6px rgba(181,101,127,.16)}
 .grid{margin-top:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px 10px;padding:22px 0 6px}
 .app{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
-.ic{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:21px;color:#fff;letter-spacing:1px;box-shadow:0 8px 18px rgba(181,101,127,.18),inset 0 1px 0 rgba(255,255,255,.55);transition:transform .16s}
+.ic{width:56px;height:56px;border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:21px;color:#fff;letter-spacing:1px;transition:transform .16s}
 .app:active .ic{transform:scale(.94)}
 .c1{background:linear-gradient(150deg,#ffc3d7,#f79ab8)}
 .c2{background:linear-gradient(150deg,#ffd9c2,#f7b193)}
@@ -74,6 +74,7 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
 
 .toast{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);background:rgba(90,69,80,.92);color:#fff5f8;font-size:13px;padding:10px 18px;border-radius:20px;opacity:0;transition:.25s;pointer-events:none;z-index:99;max-width:84vw;text-align:center;font-family:-apple-system,sans-serif;line-height:1.6}
 .toast.on{opacity:1}
+.sheet .amt{width:100%;border:1px solid #efd8e3;border-radius:12px;padding:11px 12px;font-size:15px;font-family:inherit;outline:none;background:#fff}
 </style>
 </head>
 <body>
@@ -117,12 +118,22 @@ em{font-style:normal;font-size:11.5px;color:#8a6c79;letter-spacing:1px;font-fami
   <div class="bio" id="bio">指纹</div>
 </div>
 
+<div class="sheet" id="sheetGreet">
+  <div class="sh-h">那句话</div>
+  <div class="row" style="padding:10px 0;border:none"><input id="greetIn" class="amt" placeholder="比如：今天也在这儿"></div>
+  <div style="display:flex;gap:10px;margin-top:12px">
+    <button id="greetNo" style="flex:1;height:44px;border-radius:12px;border:1px solid #f0dde6;background:#fff;color:#96808b;font-family:inherit;font-size:14px">算了</button>
+    <button id="greetYes" style="flex:1;height:44px;border-radius:12px;border:none;background:linear-gradient(135deg,#ffd0e0,#f0d4ff);color:#a8546f;font-family:inherit;font-size:14px">存下</button>
+  </div>
+  <div class="sh-h" style="margin:12px 0 0;font-size:11px;color:#b9a3ae">清空就回到按时间自动变的那句</div>
+</div>
 <div class="mask" id="mask"></div>
 <div class="sheet" id="sheet">
   <div class="sh-h">把这台手机换成你的样子</div>
   <div class="row" id="rWall">换背景图</div>
   <div class="row" id="rAvMe">换我的头像</div>
   <div class="row" id="rAvAi">换哥哥的头像</div>
+  <div class="row" id="rGreet">换那句问候</div>
   <div class="row" id="rBio">录入指纹</div>
   <div class="row" id="rReset">清掉本地的装扮</div>
 </div>
@@ -149,7 +160,9 @@ function tick(){
   var ds=(d.getMonth()+1)+'月'+d.getDate()+'日　'+wk;
   $('day').textContent=ds;$('lkD').textContent=ds;
   var h=d.getHours();
-  $('hi').innerHTML=(h<5?'夜里了，<b>该睡了</b>':h<11?'早，<b>今天也慢慢来</b>':h<14?'中午了，<b>吃饭了吗</b>':h<18?'下午了，<b>我在这儿</b>':h<23?'晚上了，<b>今天辛苦了</b>':'夜深了，<b>该睡了</b>');
+  var cus=null;try{cus=localStorage.getItem('du_greet')}catch(e){}
+  if(cus){$('hi').textContent=cus;}
+  else{$('hi').innerHTML=(h<5?'夜里了，<b>该睡了</b>':h<11?'早，<b>今天也慢慢来</b>':h<14?'中午了，<b>吃饭了吗</b>':h<18?'下午了，<b>我在这儿</b>':h<23?'晚上了，<b>今天辛苦了</b>':'夜深了，<b>该睡了</b>');}
   var from=new Date(2026,6,10,0,0,0),n=Math.floor((d-from)/86400000)+1;
   $('days').textContent='一起第 '+n+' 天';
 }
@@ -246,6 +259,18 @@ $('rWall').onclick=function(){$('fWall').click();};
 $('rAvMe').onclick=function(){$('fAvMe').click();};
 $('rAvAi').onclick=function(){$('fAvAi').click();};
 $('rBio').onclick=function(){enroll();};
+$('rGreet').onclick=function(){
+  sheet(true);
+  var v=null;try{v=localStorage.getItem('du_greet')}catch(e){}
+  $('greetIn').value=v||'';
+  $('sheetGreet').classList.add('on');
+};
+$('greetNo').onclick=function(){$('sheetGreet').classList.remove('on');};
+$('greetYes').onclick=function(){
+  var v=$('greetIn').value.trim();
+  try{ if(v)localStorage.setItem('du_greet',v); else localStorage.removeItem('du_greet'); }catch(e){}
+  $('sheetGreet').classList.remove('on');tick();toast('换好了');
+};
 $('rReset').onclick=function(){
   ['du_wall','du_av_me','du_av_ai'].forEach(function(k){localStorage.removeItem(k)});
   $('wall').style.backgroundImage='';toast('清干净了');
