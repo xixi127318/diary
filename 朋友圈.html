@@ -19,6 +19,7 @@ header{position:sticky;top:0;z-index:50;padding:15px 20px 12px;background:linear
 .toprow{display:flex;align-items:center;gap:9px}
 .brand{font-size:18px;letter-spacing:3px;color:var(--deep);font-weight:600}
 .brand small{display:block;font-size:10px;letter-spacing:2px;color:var(--ink2);font-family:-apple-system,sans-serif;margin-top:3px;font-weight:400}
+.upd{font-size:11.5px;color:#c8a2b3;padding:5px 9px;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:-apple-system,sans-serif;letter-spacing:1px}
 .go{font-size:11.5px;color:#c8a2b3;text-decoration:none;padding:4px 9px;border:1px solid var(--line);border-radius:12px;background:#fff;font-family:-apple-system,sans-serif;letter-spacing:1px}
 .who{margin-left:auto;font-size:12px;color:var(--deep);background:#fff;border:1px solid var(--pink);border-radius:16px;padding:5px 12px;cursor:pointer;box-shadow:0 2px 8px rgba(232,160,184,.16);font-family:-apple-system,sans-serif}
 .fresh{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid var(--pink);color:#c08fa4;font-size:16px;line-height:1;display:flex;align-items:center;justify-content:center;font-family:-apple-system,sans-serif}
@@ -94,6 +95,7 @@ nav div i{display:block;font-size:18px;font-style:normal;margin-bottom:3px}
       <div class="brand">渡晞<small>朋友圈　时渡 与 张映晞</small></div>
       <a class="go" href="index.html">‹ 日记</a>
       <div class="who" id="who"></div>
+      <div class="upd" id="upd">更新</div>
       <div class="fresh" id="fresh">↻</div>
     </div>
   </header>
@@ -390,6 +392,35 @@ $('nav').addEventListener('click',e=>{const d=e.target.closest('div[data-tab]');
   if(sp&&/^\d{4}$/.test(sp)){PIN=sp;drawPin();doLogin();}
   else{drawPin();}
 })();
+</script>
+
+<script>
+(function(){
+  var btn=document.getElementById('upd');
+  if(!btn) return;
+  var busy=false;
+  btn.addEventListener('click', async function(){
+    if(busy) return; busy=true;
+    btn.textContent='更新中';
+    try{
+      if('serviceWorker' in navigator){
+        var regs=await navigator.serviceWorker.getRegistrations();
+        for(var i=0;i<regs.length;i++){
+          try{ await regs[i].update(); }catch(e){}
+          if(regs[i].waiting) regs[i].waiting.postMessage({type:'SKIP_WAITING'});
+        }
+      }
+      if('caches' in window){
+        var ks=await caches.keys();
+        await Promise.all(ks.map(function(k){ return caches.delete(k); }));
+      }
+    }catch(e){}
+    location.replace(location.pathname+'?u='+Date.now());
+  });
+})();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){});});}
 </script>
 </body>
 </html>
