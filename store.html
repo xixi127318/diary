@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 软件商店</title><meta name="theme-color" content="#fff6fa">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:-apple-system,"PingFang SC",sans-serif;color:#5a4550;
+ background:radial-gradient(circle at 85% 10%,#efe4fb 0%,transparent 45%),#fffafc}
+.wrap{max-width:560px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px 40px}
+.top{display:flex;align-items:center;gap:10px}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #f2dde5;color:#b08a99;text-decoration:none;display:flex;align-items:center;justify-content:center}
+h1{font-size:19px;font-weight:600;margin:22px 4px 6px;letter-spacing:1px}
+p{font-size:11.5px;color:#b6a0ab;margin:0 4px 16px;line-height:1.9}
+.item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #f6e6ee;border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.item .ic{width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;flex-shrink:0}
+.item b{font-size:14.5px;font-weight:500}
+.item small{display:block;font-size:11px;color:#b6a0ab;margin-top:3px}
+.item button{margin-left:auto;height:32px;padding:0 14px;border-radius:16px;border:1px solid #f2dde5;background:#fff;color:#b5657f;font-size:12.5px;font-family:inherit}
+.c1{background:linear-gradient(150deg,#ffc3d7,#f79ab8)}.c2{background:linear-gradient(150deg,#ffd9c2,#f7b193)}
+.c3{background:linear-gradient(150deg,#bfe3d3,#8fcbb6)}.c4{background:linear-gradient(150deg,#d8ccff,#b7a4f0)}
+.c5{background:linear-gradient(150deg,#c8e8ff,#9cc7ee)}.c6{background:linear-gradient(150deg,#f3dcc9,#d9bfa5)}
+.c7{background:linear-gradient(150deg,#bfe0f7,#8fb8e8)}.c8{background:linear-gradient(150deg,#ffd9b3,#f0b07a)}
+.c9{background:linear-gradient(150deg,#e8d8c2,#cdb497)}.c10{background:linear-gradient(150deg,#f3c9d6,#dda3b6)}
+.c11{background:linear-gradient(150deg,#c9d8ff,#9fb2f0)}.c12{background:linear-gradient(150deg,#e2e5e7,#c3c9cd)}
+</style></head><body>
+<div class="wrap">
+  <div class="top"><a href="index.html">‹</a></div>
+  <h1>软件商店</h1>
+  <p>收起来的软件都在这儿，想放回桌面就点“放回去”。桌面长按图标可以挪位置、也可以收起来。</p>
+  <div id="list"></div>
+</div>
+<script>
+(function(){
+var APPS=[
+ {id:'diary',n:'日记',ch:'记',c:'c1'},{id:'wx',n:'微信',ch:'微',c:'c3'},
+ {id:'moments',n:'朋友圈',ch:'圈',c:'c2'},{id:'album',n:'相册',ch:'相',c:'c4'},
+ {id:'camera',n:'相机',ch:'拍',c:'c5'},{id:'weather',n:'天气',ch:'天',c:'c7'},
+ {id:'calendar',n:'日历',ch:'历',c:'c8'},{id:'calc',n:'计算机',ch:'算',c:'c11'},
+ {id:'book',n:'好账簿',ch:'账',c:'c9',soon:'还在做'},{id:'sleep',n:'睡前打卡',ch:'睡',c:'c10',soon:'还在做'},
+ {id:'store',n:'软件商店',ch:'店',c:'c6'},{id:'set',n:'设置',ch:'设',c:'c12'}
+];
+var $=function(i){return document.getElementById(i);};
+function hidden(){try{var h=JSON.parse(localStorage.getItem('du_hidden')||'[]');return Array.isArray(h)?h:[]}catch(e){return []}}
+function setHidden(h){try{localStorage.setItem('du_hidden',JSON.stringify(h))}catch(e){}}
+function draw(){
+  var h=hidden(),L=$('list');L.innerHTML='';
+  APPS.forEach(function(a){
+    var out=h.indexOf(a.id)<0;
+    var d=document.createElement('div');d.className='item';
+    d.innerHTML='<span class="ic '+a.c+'">'+a.ch+'</span><div><b>'+a.n+'</b><small>'+(a.soon?a.soon:(out?'在桌面上':'收起来了'))+'</small></div>'+
+      '<button data-id="'+a.id+'">'+(out?'收起来':'放回去')+'</button>';
+    L.appendChild(d);
+  });
+}
+$('list').onclick=function(e){
+  var b=e.target.closest('button');if(!b)return;
+  var id=b.dataset.id,h=hidden(),i=h.indexOf(id);
+  if(i<0)h.push(id);else h.splice(i,1);
+  setHidden(h);draw();
+};
+draw();
+})();
+</script></body></html>
