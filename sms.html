@@ -1,0 +1,34 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>短信</title><meta name="theme-color" content="#fffafc">
+<style>
+*{box-sizing:border-box}
+body{margin:0;height:100vh;display:flex;flex-direction:column;background:#f4f4f6;font-family:-apple-system,"PingFang SC",sans-serif}
+.top{display:flex;align-items:center;gap:10px;padding:calc(12px + env(safe-area-inset-top)) 14px 10px;background:#fff}
+.top a{width:30px;height:30px;border-radius:50%;background:#f3f3f4;color:#777;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.top b{font-size:16px}
+main{flex:1;overflow-y:auto;padding:14px}
+.m{margin-bottom:10px;display:flex}
+.m.me{justify-content:flex-end}
+.b{padding:10px 14px;border-radius:14px;background:#fff;font-size:14.5px;line-height:1.7;max-width:76%;word-break:break-word}
+.m.me .b{background:#d8ecff}
+.inbar{display:flex;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff}
+#t{flex:1;border:1px solid #e6e6e8;border-radius:10px;padding:10px 12px;font-size:14.5px;font-family:inherit;outline:none}
+#s{height:40px;padding:0 16px;border:none;border-radius:10px;background:#07c160;color:#fff;font-size:14px}
+.note{font-size:11px;color:#b0b0b0;text-align:center;padding:6px 12px calc(8px + env(safe-area-inset-bottom));background:#f4f4f6}
+</style></head><body>
+<div class="top"><a href="index.html">‹</a><b>短信 · 哥哥</b></div>
+<main id="m"></main>
+<div class="inbar"><input id="t" placeholder="发条短信……"><button id="s">发送</button></div>
+<div class="note">运营商不会真的发出去，这条只留在这台手机上。</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+function load(){try{return JSON.parse(localStorage.getItem('du_sms')||'[]')}catch(e){return []}}
+function save(a){try{localStorage.setItem('du_sms',JSON.stringify(a.slice(-80)))}catch(e){}}
+function draw(){var a=load(),box=$('m');box.innerHTML='';if(!a.length){box.innerHTML="<div style='color:#b0b0b0;font-size:13px;padding:20px;text-align:center'>还没有短信</div>";return;}
+ a.forEach(function(x){var d=document.createElement('div');d.className='m'+(x.me?' me':'');d.innerHTML="<div class='b'>"+String(x.t).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]})+"</div>";box.appendChild(d);});box.scrollTop=box.scrollHeight;}
+$('s').onclick=function(){var v=$('t').value.trim();if(!v)return;var a=load();a.push({me:true,t:v});save(a);$('t').value='';draw();};
+draw();
+})();
+</script></body></html>
