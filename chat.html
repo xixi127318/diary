@@ -49,6 +49,8 @@ textarea.sel{min-height:88px;resize:vertical;line-height:1.7}
 .toast.on{opacity:1}
 body.embed .back{visibility:hidden}
 body.embed footer{display:none}
+.av.poked{animation:pk .4s ease}
+@keyframes pk{0%{transform:scale(1)}30%{transform:scale(1.22) rotate(-6deg)}60%{transform:scale(.96) rotate(4deg)}100%{transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -139,12 +141,14 @@ function bindPoke(){
   });
 }
 function doPoke(k){
-  var suf=null;try{suf=localStorage.getItem('du_paiti')}catch(e){}
+  var suf=null;
+  try{ suf=localStorage.getItem(k==='ai'?'du_paiti_ai':'du_paiti'); }catch(e){}
   if(!suf)suf='肩膀';
   var who=(k==='ai')?'哥哥':'自己';
   toast('你拍了拍'+who);
-  var b=$('msgs');b.style.transition='transform .12s';b.style.transform='translateX(-6px)';
-  setTimeout(function(){b.style.transform='none';},140);
+  var avs=document.querySelectorAll("[data-poke='"+k+"']");
+  for(var i=0;i<avs.length;i++){avs[i].classList.add('poked');}
+  setTimeout(function(){for(var i=0;i<avs.length;i++)avs[i].classList.remove('poked');},500);
   push({id:'p'+Date.now(),from_id:ME,to_id:PEER,content:'拍了拍'+who+' 的 '+suf,created_at:new Date().toISOString()});
 }
 function render(){
