@@ -1,5 +1,5 @@
-const CACHE = "duxi-v10";
-const ASSETS = ["./", "./index.html", "./diary.html", "./朋友圈.html", "./album.html", "./chat.html", "./wx.html", "./camera.html", "./weather.html", "./calendar.html", "./calc.html", "./store.html", "./manifest.json", "./icon-180.png", "./icon-512.png"];
+const CACHE = "duxi-v11";
+const ASSETS = ["./", "./index.html", "./diary.html", "./朋友圈.html", "./album.html", "./chat.html", "./wx.html", "./camera.html", "./weather.html", "./calendar.html", "./calc.html", "./store.html", "./settings.html", "./manifest.json", "./icon-180.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
   self.skipWaiting();
