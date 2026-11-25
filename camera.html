@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>渡晞 · 相机</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0;background:#0b0b0b;color:#eee;font-family:-apple-system,"PingFang SC",sans-serif;overflow:hidden}
+.top{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);display:flex;align-items:center;padding-left:14px;padding-right:14px;z-index:5}
+.top a{color:#ddd;text-decoration:none;font-size:16px}
+.top b{margin-left:auto;font-weight:400;color:#bbb;font-size:12px}
+.stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 12px}
+.stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.hint{color:#8b8b8b;font-size:13px;line-height:2;text-align:center}
+.shutter{position:fixed;left:50%;bottom:calc(36px + env(safe-area-inset-bottom));transform:translateX(-50%);width:72px;height:72px;border-radius:50%;background:#fff;border:5px solid #dfdfdf;z-index:6}
+.ops{position:fixed;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom));display:flex;justify-content:center;gap:14px;z-index:6}
+.ops button{height:46px;padding:0 22px;border-radius:23px;border:none;font-size:15px;font-family:inherit}
+#save{background:#07c160;color:#fff}
+#again{background:rgba(255,255,255,.14);color:#ddd}
+#camIn{display:none}
+.toast{position:fixed;left:50%;bottom:150px;transform:translateX(-50%);background:rgba(0,0,0,.8);color:#fff;font-size:13px;padding:9px 16px;border-radius:16px;opacity:0;transition:.25s;pointer-events:none;z-index:99}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="top"><a href="index.html">‹</a><b>相机</b></div>
+<div class="stage" id="stage"><div class="hint">按下面那个白圈，拍一张。<br>拍完可以存进相册。</div></div>
+<button class="shutter" id="shutter"></button>
+<div class="ops" id="ops" style="display:none">
+  <button id="again">重拍</button>
+  <button id="save">存进相册</button>
+</div>
+<input type="file" id="camIn" accept="image/*" capture="environment">
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id);};
+var SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
+var H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"};
+var ME=null,BLOB=null;
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2400);}
+var u=null;try{u=sessionStorage.getItem('du_uid')}catch(e){}
+if(!u){location.replace('index.html');return;}
+ME=u;
+
+$('shutter').onclick=function(){$('camIn').click();};
+$('camIn').onchange=function(){
+  var f=this.files[0];this.value='';if(!f)return;
+  compress(f,1600).then(function(res){
+    BLOB=res.blob;
+    $('stage').innerHTML="<img src='"+res.url+"'>";
+    $('ops').style.display='flex';
+    $('shutter').style.display='none';
+  }).catch(function(){toast('这张图读不出来');});
+};
+$('again').onclick=function(){
+  if(BLOB){try{URL.revokeObjectURL($('stage').querySelector('img').src);}catch(e){}}
+  BLOB=null;$('stage').innerHTML="<div class='hint'>按下面那个白圈，拍一张。<br>拍完可以存进相册。</div>";
+  $('ops').style.display='none';$('shutter').style.display='block';
+};
+$('save').onclick=async function(){
+  if(!BLOB)return;
+  var btn=$('save');btn.disabled=true;btn.textContent='存着……';
+  try{
+    var folder=(ME==='ai_哥哥')?'ai':'user';
+    var path=folder+'/c'+Date.now()+'_'+Math.floor(Math.random()*99999)+'.jpg';
+    var r=await fetch(SB_URL+'/storage/v1/object/moments/'+path,{method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'image/jpeg'},body:BLOB});
+    if(!r.ok)throw new Error('图没传上去（'+r.status+'）');
+    var url=SB_URL+'/storage/v1/object/public/moments/'+path;
+    await fetch(SB_URL+'/rest/v1/diary_moments',{method:'POST',headers:Object.assign({},H,{'Prefer':'return=minimal'}),
+      body:JSON.stringify({user_id:ME,content:'',images:[url],private:true})});
+    toast('存进相册了');
+    setTimeout(function(){location.href='album.html';},900);
+  }catch(e){toast('没存上：'+e.message);btn.disabled=false;btn.textContent='存进相册';}
+};
+
+function compress(file,max){
+  return new Promise(function(res,rej){
+    var u2=URL.createObjectURL(file),im=new Image();
+    im.onload=function(){
+      try{
+        var w=im.naturalWidth,h=im.naturalHeight,m=max||1600;
+        if(w>m||h>m){var r=m/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r);}
+        var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+        cv.getContext('2d').drawImage(im,0,0,w,h);
+        cv.toBlob(function(b){if(!b){rej(new Error('压不动'));return;}
+          res({blob:b,url:URL.createObjectURL(b)});
+        },'image/jpeg',0.8);
+      }catch(e){rej(e);}
+    };
+    im.onerror=function(){rej(new Error('读不出来'));};
+    im.src=u2;
+  });
+}
+})();
+</script>
+</body>
+</html>
