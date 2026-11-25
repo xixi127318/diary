@@ -31,6 +31,8 @@ main{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px
 #inp{flex:1;min-height:38px;max-height:110px;border-radius:8px;border:none;padding:9px 10px;font-size:15px;line-height:1.6;font-family:inherit;resize:none;outline:none;background:#fff}
 #send{height:38px;padding:0 14px;border:none;border-radius:8px;background:#07c160;color:#fff;font-size:14px;font-family:inherit;flex-shrink:0}
 #send:disabled{opacity:.5}
+.pmask{position:fixed;inset:0;background:rgba(0,0,0,.22);z-index:85;display:none}
+.pmask.on{display:block}
 footer{flex:0 0 auto;text-align:center;font-size:10px;color:#b9b9b9;padding:0 0 calc(4px + env(safe-area-inset-bottom));background:#f7f7f7}
 
 .mask{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:60;display:none}
@@ -57,7 +59,7 @@ body.embed footer{display:none}
 .rp b{font-size:15px;display:block}
 .rp span{font-size:13px;opacity:.9;margin-top:6px;display:block}
 .plus{width:34px;height:34px;border-radius:50%;background:#f2f2f2;color:#555;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;margin-right:2px}
-.panel{position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:70;background:#f7f7f7;padding:12px 10px calc(10px + env(safe-area-inset-bottom));display:none;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid #e2e2e2}
+.panel{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#f7f7f7;padding:14px 10px calc(18px + env(safe-area-inset-bottom));display:none;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid #e2e2e2;border-radius:14px 14px 0 0;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
 .panel.on{display:grid}
 .pbtn{background:#fff;border-radius:12px;padding:12px 0;text-align:center;font-size:12.5px;color:#444}
 .pbtn b{display:block;font-size:18px;color:#07a15a;margin-bottom:4px;font-weight:400}
@@ -90,6 +92,7 @@ body.embed footer{display:none}
   <textarea id="inp" rows="1" placeholder="说点什么……"></textarea>
   <button id="send">发送</button>
 </div>
+<div class="pmask" id="pmask"></div>
 <div class="panel" id="panel">
   <div class="pbtn" data-a="pic"><b>图</b>图片</div>
   <div class="pbtn" data-a="cam"><b>拍</b>拍摄</div>
@@ -212,6 +215,7 @@ function bubbleHTML(s){
   if(s.indexOf('[转账]')===0)return "<div class='rp'><b>转账</b><span>"+esc(s.slice(4))+"</span></div>";
   return esc(s);
 }
+function paintTop(){var t=document.querySelector('.tt small');if(!t)return;var top=(cfg('top')==='1');t.textContent=(cfg('note')||'时渡')+(top?' · 置顶':'');}
 function render(){
   var box=$('msgs');
   if(!MSGS.length){box.innerHTML="<div class='tm'>还没有一句话。<br>说第一句，它就在。</div>";return;}
@@ -336,11 +340,35 @@ function openInfo(){
   $('swBlock').classList.toggle('on',cfg('block')==='1');
 }
 $('iBack').onclick=function(){$('info2').classList.remove('on');};
-$('iNote').onclick=function(){var v=prompt('备注叫什么',cfg('note')||'哥哥');if(v!==null){setCfg('note',v);$('iNoteV').textContent=v||'哥哥';$('peer').textContent=v||'哥哥';}};
+$('iNote').onclick=function(){var v=prompt('备注叫什么',cfg('note')||'哥哥');if(v!==null){setCfg('note',v);$('iNoteV').textContent=v||'哥哥';$('peer').textContent=v||'哥哥';paintTop();}};
 $('iMute').onclick=function(){setCfg('mute',cfg('mute')==='1'?'':"1");$('swMute').classList.toggle('on',cfg('mute')==='1');};
-$('iTop').onclick=function(){setCfg('top',cfg('top')==='1'?'':"1");$('swTop').classList.toggle('on',cfg('top')==='1');};
+$('iTop').onclick=function(){setCfg('top',cfg('top')==='1'?'':"1");$('swTop').classList.toggle('on',cfg('top')==='1');paintTop();};
 $('iBlock').onclick=function(){setCfg('block',cfg('block')==='1'?'':"1");$('swBlock').classList.toggle('on',cfg('block')==='1');toast(cfg('block')==='1'?'已加入黑名单':'已移出黑名单');};
-$('iBg').onclick=function(){toast('背景还没做')};
+$('iBg').onclick=function(){
+  var inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=function(){
+    var f=this.files[0];if(!f)return;
+    var u=URL.createObjectURL(f),im=new Image();
+    im.onload=function(){
+      var w=im.naturalWidth,h=im.naturalHeight,mx=1200;
+      if(w>mx||h>mx){var r=mx/Math.max(w,h);w=Math.round(w*r);h=Math.round(h*r);}
+      var cv=document.createElement('canvas');cv.width=w;cv.height=h;
+      cv.getContext('2d').drawImage(im,0,0,w,h);
+      var d=cv.toDataURL('image/jpeg',0.8);
+      try{localStorage.setItem('du_chatbg',d);}catch(e){toast('图太大');return;}
+      applyBg(d);URL.revokeObjectURL(u);toast('背景换好了');$('info2').classList.remove('on');
+    };
+    im.onerror=function(){toast('这张图读不出来');};
+    im.src=u;
+  };
+  inp.click();
+};
+function applyBg(d){
+  var b=$('msgs');if(!b)return;
+  if(!d){b.style.backgroundImage='';b.style.background='#ededed';return;}
+  b.style.background='#ededed url("'+d+'") center/cover no-repeat';
+}
+(function(){var d=null;try{d=localStorage.getItem('du_chatbg')}catch(e){}if(d)applyBg(d);})();
 $('iReport').onclick=function(){toast('记下了，回头我处理')};
 $('iSearch').onclick=function(){
   var q=prompt('找什么字');if(!q)return;
@@ -362,12 +390,14 @@ $('iDel').onclick=function(){
 };
 
 var EMO=['😊','🥰','😴','🌙','💗','🍰','🌧','🐱'];
-$('plus').onclick=function(){var p=$('panel');p.classList.toggle('on');};
+function panel(on){var p=$('panel'),k=$('pmask');if(!p)return;p.classList.toggle('on',on);k.classList.toggle('on',on);}
+$('plus').onclick=function(){panel(!$('panel').classList.contains('on'));};
+$('pmask').onclick=function(){panel(false);};
 
 $('panel').onclick=function(e){
   var b=e.target.closest('[data-a]');if(!b)return;
   var a=b.dataset.a;
-  $('panel').classList.remove('on');
+  panel(false);
   if(a==='pic'){$('picIn').click();return;}
   if(a==='cam'){$('camIn').click();return;}
   if(a==='emo'){
@@ -435,20 +465,7 @@ $('camIn').onchange=function(){var f=this.files[0];this.value='';if(f)sendImage(
   $('inp').addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});
   var tt=document.querySelector('.tt');if(tt)tt.onclick=function(){openInfo();};
   var lastTap=0;
-  function poke(){
-    poked();
-  }
-  function poked(){
-    if(!ME)return;
-    toast('你拍了拍哥哥');
-    var box=$('msgs');
-    box.style.transition='transform .12s';
-    box.style.transform='translateX(-6px)';
-    setTimeout(function(){box.style.transform='none';},140);
-    var suffix=null;try{suffix=localStorage.getItem('du_paiti')}catch(e){}
-    push({id:'p'+Date.now(),from_id:ME,to_id:PEER,content:'拍了拍哥哥'+(suffix?(' 的 '+suffix):''),created_at:new Date().toISOString()});
-  }
-  if($('hav'))$('hav').addEventListener('click',function(){var n=Date.now();if(n-lastTap<400){poked();}lastTap=n;});
+  if($('hav'))$('hav').addEventListener('click',function(){var n=Date.now();if(n-lastTap<400){doPoke('ai');}lastTap=n;});
   await load();
   setInterval(function(){ if(!SENDING) load(); },10000);
 })();
