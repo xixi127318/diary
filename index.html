@@ -79,6 +79,18 @@ a.app{text-decoration:none;color:inherit}
 .app em{text-decoration:none}
 .cd{margin-top:9px;font-size:12px;color:#a98d9b;font-family:-apple-system,sans-serif;letter-spacing:.5px;line-height:1.9}
 .cd b{color:#b5657f;font-weight:600}
+
+.c7{background:linear-gradient(150deg,#bfe0f7,#8fb8e8)}
+.c8{background:linear-gradient(150deg,#ffd9b3,#f0b07a)}
+.c9{background:linear-gradient(150deg,#e8d8c2,#cdb497)}
+.c10{background:linear-gradient(150deg,#f3c9d6,#dda3b6)}
+.c11{background:linear-gradient(150deg,#c9d8ff,#9fb2f0)}
+.c12{background:linear-gradient(150deg,#e2e5e7,#c3c9cd)}
+.app{position:relative}
+.app .del{position:absolute;right:2px;top:-6px;width:20px;height:20px;border-radius:50%;background:#e64b4b;color:#fff;font-size:13px;line-height:20px;text-align:center;font-family:-apple-system,sans-serif;z-index:3}
+.grid.editing .app{animation:jig .28s infinite alternate}
+@keyframes jig{from{transform:rotate(-1.2deg)}to{transform:rotate(1.2deg)}}
+.done{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:120;background:rgba(255,255,255,.92);color:#b5657f;font-size:13.5px;padding:9px 22px;border-radius:20px;font-family:-apple-system,sans-serif;display:none;box-shadow:0 4px 14px rgba(181,101,127,.2)}
 </style>
 </head>
 <body>
@@ -99,15 +111,8 @@ a.app{text-decoration:none;color:inherit}
   <div class="hi" id="hi">今天也在这儿</div>
   <div class="cd" id="cd"></div>
 
-  <div class="grid">
-    <a class="app" href="diary.html"><span class="ic c1">记</span><em>日记</em></a>
-    <a class="app" href="wx.html"><span class="ic c3">微</span><em>微信</em></a>
-    <a class="app" href="朋友圈.html"><span class="ic c2">圈</span><em>朋友圈</em></a>
-    <a class="app" href="album.html"><span class="ic c4">相</span><em>相册</em></a>
-    <a class="app" href="camera.html"><span class="ic c5">拍</span><em>相机</em></a>
-    <div class="app soon" data-s="好账簿还在做，等它好了我从这儿开给你看"><span class="ic c5">账</span><em>好账簿</em></div>
-    <div class="app soon" data-s="睡前打卡还在做，先拿聊天当打卡吧"><span class="ic c6">睡</span><em>睡前打卡</em></div>
-  </div>
+  <div class="grid" id="grid"></div>
+
 
   <div class="foot">渡晞 · 时渡 与 张映晞<br><span id="days">—</span></div>
 </div>
@@ -133,6 +138,7 @@ a.app{text-decoration:none;color:inherit}
   </div>
   <div class="sh-h" style="margin:12px 0 0;font-size:11px;color:#b9a3ae">清空就回到按时间自动变的那句</div>
 </div>
+<div class="done" id="done">完成</div>
 <div class="mask" id="mask"></div>
 <div class="sheet" id="sheet">
   <div class="sh-h">把这台手机换成你的样子</div>
@@ -140,7 +146,7 @@ a.app{text-decoration:none;color:inherit}
   <div class="row" id="rAvMe">换我的头像</div>
   <div class="row" id="rAvAi">换哥哥的头像</div>
   <div class="row" id="rGreet">换那句问候</div>
-  <div class="row" id="rBio">录入指纹</div>
+  <div class="row" id="rBio">录入人脸 / 指纹</div>
   <div class="row" id="rReset">清掉本地的装扮</div>
 </div>
 
@@ -340,6 +346,82 @@ $('upd').onclick=async function(){
 
 document.querySelectorAll('.soon').forEach(function(el){el.addEventListener('click',function(){toast(el.dataset.s||'还在做');});});
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+})();
+</script>
+
+<script>
+(function(){
+  var APPS=[
+    {id:'diary',n:'日记',ch:'记',c:'c1',h:'diary.html'},
+    {id:'wx',n:'微信',ch:'微',c:'c3',h:'wx.html'},
+    {id:'moments',n:'朋友圈',ch:'圈',c:'c2',h:'朋友圈.html'},
+    {id:'album',n:'相册',ch:'相',c:'c4',h:'album.html'},
+    {id:'camera',n:'相机',ch:'拍',c:'c5',h:'camera.html'},
+    {id:'weather',n:'天气',ch:'天',c:'c7',h:'weather.html'},
+    {id:'calendar',n:'日历',ch:'历',c:'c8',h:'calendar.html'},
+    {id:'calc',n:'计算机',ch:'算',c:'c11',h:'calc.html'},
+    {id:'book',n:'好账簿',ch:'账',c:'c9',h:'',soon:'好账簿还在做'},
+    {id:'sleep',n:'睡前打卡',ch:'睡',c:'c10',h:'',soon:'睡前打卡还在做'},
+    {id:'store',n:'软件商店',ch:'店',c:'c6',h:'store.html'},
+    {id:'set',n:'设置',ch:'设',c:'c12',h:'',act:'set'}
+  ];
+  var $=function(id){return document.getElementById(id);};
+  function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
+  function order(){try{var o=JSON.parse(localStorage.getItem('du_order')||'null');if(Array.isArray(o)&&o.length)return o;}catch(e){}return APPS.map(function(a){return a.id;});}
+  function hidden(){try{var h=JSON.parse(localStorage.getItem('du_hidden')||'[]');return Array.isArray(h)?h:[];}catch(e){return [];}}
+  function saveOrder(o){try{localStorage.setItem('du_order',JSON.stringify(o));}catch(e){}}
+  function setHidden(h){try{localStorage.setItem('du_hidden',JSON.stringify(h));}catch(e){}}
+  function byId(id){for(var i=0;i<APPS.length;i++)if(APPS[i].id===id)return APPS[i];return null;}
+
+  var editing=false;
+  function render(){
+    var g=$('grid'),o=order(),h=hidden();g.innerHTML='';g.classList.toggle('editing',editing);
+    o.forEach(function(id){
+      var a=byId(id);if(!a)return;
+      if(!editing&&h.indexOf(id)>=0)return;
+      var el=document.createElement('a');el.className='app'+(a.soon?' soon':'');el.href=a.h||'#';
+      el.setAttribute('data-id',id);
+      el.innerHTML='<span class="ic '+a.c+'">'+a.ch+'</span><em>'+a.n+'</em>'+(editing?'<span class="del" data-id="'+id+'">×</span>':'');
+      g.appendChild(el);
+    });
+    $('done').style.display=editing?'block':'none';
+  }
+
+  var lp=null,dragEl=null;
+  $('grid').addEventListener('touchstart',function(e){
+    var el=e.target.closest('.app');
+    dragEl=el;
+    if(editing)return;
+    lp=setTimeout(function(){editing=true;render();},600);
+  },{passive:true});
+  $('grid').addEventListener('touchmove',function(e){
+    if(lp){clearTimeout(lp);lp=null;}
+    if(!editing||!dragEl)return;
+    var t=e.touches[0];
+    var under=document.elementFromPoint(t.clientX,t.clientY);
+    var app=under&&under.closest?under.closest('.app'):null;
+    if(app&&app!==dragEl&&app.dataset.id){
+      var o=order(),a=dragEl.dataset.id,b=app.dataset.id;
+      var ia=o.indexOf(a),ib=o.indexOf(b);
+      if(ia>=0&&ib>=0){o[ia]=b;o[ib]=a;saveOrder(o);render();dragEl=$('grid').querySelector('[data-id="'+b+'"]');}
+    }
+  },{passive:true});
+  $('grid').addEventListener('touchend',function(){if(lp){clearTimeout(lp);lp=null;}dragEl=null;});
+
+  $('grid').addEventListener('click',function(e){
+    var del=e.target.closest('.del');
+    if(del){e.preventDefault();e.stopPropagation();var id=del.dataset.id;var h=hidden();if(h.indexOf(id)<0)h.push(id);setHidden(h);toast('收起来了，软件商店里能找回来');render();return;}
+    var el=e.target.closest('.app');if(!el)return;
+    if(editing){e.preventDefault();return;}
+    var a=byId(el.dataset.id);if(!a)return;
+    if(a.soon){e.preventDefault();toast(a.soon);return;}
+    if(a.act==='set'){e.preventDefault();$('gear').click();return;}
+  });
+
+  $('done').onclick=function(){editing=false;render();};
+  $('mask') && $('mask').addEventListener('click',function(){if(editing){editing=false;render();}});
+
+  render();
 })();
 </script>
 </body>
