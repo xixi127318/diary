@@ -86,9 +86,12 @@ nav div i{display:block;font-size:18px;font-style:normal;margin-bottom:3px}
 #pad b.fn{font-size:13px;color:#c4a8b6}
 .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:rgba(90,69,80,.94);color:#fff5f8;font-size:13px;padding:11px 20px;border-radius:20px;opacity:0;transition:.28s;pointer-events:none;z-index:99;max-width:86vw;text-align:center;font-family:-apple-system,sans-serif;line-height:1.6}
 .toast.on{opacity:1}
+body.embed header{display:none!important}
+body.embed .wrap{padding-top:8px}
 </style>
 </head>
 <body>
+<script>if(location.search.indexOf('embed')>=0)document.body.classList.add('embed');</script>
 <div class="wrap">
   <header id="hdr" style="display:none">
     <div class="toprow">
