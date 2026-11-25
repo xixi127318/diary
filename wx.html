@@ -182,6 +182,8 @@ input.amt{width:100%;border:1px solid #e3e3e3;border-radius:9px;padding:11px 12p
   <div class="sh-s">哥哥那边的设置在桌面右上角“设”。</div>
   <div class="cell" id="setApi"><span class="ico i3">模</span>接模型<span class="r">在聊天页右上“⋯”</span><span class="arrow">›</span></div>
   <div class="cell" id="setUpd"><span class="ico i7">新</span>换新版<span class="r">清缓存再重开</span><span class="arrow">›</span></div>
+  <div class="cell" id="setPaiMe"><span class="ico i6">我</span>我的拍一拍<span class="r" id="paiMeN">oㅂo|| 肿么惹</span><span class="arrow">›</span></div>
+  <div class="cell" id="setPaiAi"><span class="ico i4">他</span>哥哥的拍一拍<span class="r" id="paiAiN">肩膀</span><span class="arrow">›</span></div>
   <div class="cell" id="setHome"><span class="ico i1">桌</span>回桌面<span class="r"></span><span class="arrow">›</span></div>
 </div>
 
@@ -333,7 +335,9 @@ $('mWorks').onclick=function(){toast('作品还没做')};
 $('mSticker').onclick=function(){toast('表情包以后再说')};
 
 /* ---- 设置 ---- */
-$('mSet').onclick=function(){$('sheetSet').classList.add('on');mask(true);};
+$('mSet').onclick=function(){$('paiMeN').textContent=ls('du_paiti','oㅂo|| 肿么惹');$('paiAiN').textContent=ls('du_paiti_ai','肩膀');$('sheetSet').classList.add('on');mask(true);};
+$('setPaiMe').onclick=function(){edit('我的拍一拍','别人拍你时显示在“的”后面','du_paiti','oㅂo|| 肿么惹');setTimeout(function(){document.getElementById('paiMeN').textContent=ls('du_paiti','oㅂo|| 肿么惹');},0);};
+$('setPaiAi').onclick=function(){edit('哥哥的拍一拍','你拍他时用的那个','du_paiti_ai','肩膀');setTimeout(function(){document.getElementById('paiAiN').textContent=ls('du_paiti_ai','肩膀');},0);};
 $('setApi').onclick=function(){tab(0);toast('聊天页右上“⋯”里填接口');};
 $('setUpd').onclick=async function(){
   try{
