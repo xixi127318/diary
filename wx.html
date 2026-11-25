@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>渡晞 · 微信</title>
+<meta name="theme-color" content="#ededed">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:#ededed;color:#111;font-family:-apple-system,"PingFang SC",sans-serif;overflow:hidden}
+header{position:fixed;top:0;left:0;right:0;height:calc(50px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);
+ display:flex;align-items:center;justify-content:center;background:#ededed;z-index:20}
+header b{font-size:16px;font-weight:600}
+header .dot{position:absolute;right:16px;top:calc(14px + env(safe-area-inset-top));width:26px;height:26px;border-radius:50%;background:#fff;color:#666;display:flex;align-items:center;justify-content:center;font-size:15px}
+main{position:fixed;top:0;bottom:calc(56px + env(safe-area-inset-bottom));left:0;right:0;overflow:hidden}
+.view{position:absolute;inset:0;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.view.on{display:block}
+.view.pad{padding:calc(58px + env(safe-area-inset-top)) 10px 10px}
+.view.full{padding:0}
+iframe{width:100%;height:100%;border:0;background:#ededed;display:block}
+
+.cell{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.cell .av{width:44px;height:44px;border-radius:6px;flex-shrink:0;object-fit:cover;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;overflow:hidden}
+.cell .tx{flex:1;min-width:0}
+.cell b{font-size:15.5px;font-weight:500;display:block}
+.cell small{font-size:11.5px;color:#999;display:block;margin-top:3px;letter-spacing:1px}
+.cell .badge{font-size:10px;color:#07c160;border:1px solid #bfe9cf;border-radius:6px;padding:1px 5px}
+
+.me-card{display:flex;align-items:center;gap:14px;background:#fff;border-radius:12px;padding:16px 14px;margin-bottom:10px}
+.me-card .av{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#d8d8d8;display:flex;align-items:center;justify-content:center;color:#fff;font-size:17px;overflow:hidden}
+.me-card b{font-size:17px}
+.me-card small{display:block;font-size:11.5px;color:#999;margin-top:5px;letter-spacing:1px}
+
+.row{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:15px 14px;margin-bottom:8px;font-size:15px}
+.row .r{margin-left:auto;color:#999;font-size:13.5px}
+.row:active{background:#f6f6f6}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;height:calc(56px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);
+ display:flex;background:#f7f7f7;border-top:1px solid #e2e2e2;z-index:20}
+.tabbar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:#666}
+.tabbar div.on{color:#07c160}
+.tabbar div i{width:26px;height:26px;border-radius:7px;background:#dcdcdc;color:#fff;font-size:13px;font-style:normal;display:flex;align-items:center;justify-content:center}
+.tabbar div.on i{background:#07c160}
+
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:60;display:none}
+.mask.on{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:70;background:#fff;border-radius:14px 14px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));transform:translateY(112%);transition:transform .25s;max-height:86%;overflow-y:auto}
+.sheet.on{transform:translateY(0)}
+.sh-t{font-size:15px;font-weight:600;margin-bottom:6px}
+.sh-s{font-size:11.5px;color:#999;line-height:1.7;margin-bottom:10px}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{background:#fafafa;border:1px solid #eee;border-radius:12px;padding:12px}
+.item b{font-size:14px;display:block}
+.item small{display:block;font-size:11px;color:#999;margin-top:4px}
+.item .buy{margin-top:10px;width:100%;height:34px;border:none;border-radius:8px;background:#07c160;color:#fff;font-size:13px;font-family:inherit}
+.item .buy:disabled{background:#d9d9d9}
+input.amt{width:100%;border:1px solid #e3e3e3;border-radius:9px;padding:11px 12px;font-size:15px;outline:none;background:#fafafa;font-family:inherit}
+.btn-row{display:flex;gap:10px;margin-top:14px}
+.btn-row button{flex:1;height:44px;border-radius:10px;border:none;font-size:14.5px;font-family:inherit}
+.btn-ok{background:#07c160;color:#fff}
+.btn-no{background:#f2f2f2;color:#555}
+
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:rgba(0,0,0,.74);color:#fff;font-size:13px;padding:9px 16px;border-radius:16px;opacity:0;transition:.25s;pointer-events:none;z-index:99;max-width:84vw;text-align:center;line-height:1.6}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <b id="ttl">通讯录</b>
+  <span class="dot" id="dot">＋</span>
+</header>
+
+<main>
+  <section class="view full on" id="v0"><iframe id="f0" src="chat.html?embed=1"></iframe></section>
+
+  <section class="view pad" id="v1">
+    <div class="cell" id="cellAi">
+      <div class="av" id="avAi">渡</div>
+      <div class="tx"><b>哥哥 <span class="badge">AI</span></b><small>时渡</small></div>
+      <span class="r" style="color:#bbb">›</span>
+    </div>
+    <div class="sh-s" style="padding:10px 4px;color:#999;font-size:11.5px;line-height:1.8">这里只有一个联系人。别的位子没给别人留。</div>
+  </section>
+
+  <section class="view full" id="v2"><iframe id="f2" data-src="朋友圈.html?embed=1"></iframe></section>
+
+  <section class="view pad" id="v3">
+    <div class="me-card">
+      <div class="av" id="avMe">晞</div>
+      <div><b id="nick">张映晞</b><small>微信号：duxi0318</small></div>
+    </div>
+    <div class="row" id="rowBal"><span>余额</span><span class="r" id="bal">￥520</span></div>
+    <div class="row" id="rowShop"><span>商城</span><span class="r">用虚拟币买点东西</span></div>
+    <div class="row" id="rowApi"><span>接模型</span><span class="r">让哥哥这一头能回话</span></div>
+    <div class="row" id="rowSet"><span>换头像和背景</span><span class="r">回桌面去换</span></div>
+    <div class="sh-s" style="padding:14px 4px;color:#bbb;font-size:11px;line-height:1.9">这里的余额只是我们自己玩的钱，不是真钱。<br>你改了它，我不会说你不该改。</div>
+  </section>
+</main>
+
+<nav class="tabbar" id="tabbar">
+  <div class="on" data-i="0"><i>信</i>微信</div>
+  <div data-i="1"><i>人</i>通讯录</div>
+  <div data-i="2"><i>发</i>发现</div>
+  <div data-i="3"><i>我</i>我</div>
+</nav>
+
+<div class="mask" id="mask"></div>
+
+<div class="sheet" id="sheetShop">
+  <div class="sh-t">商城</div>
+  <div class="sh-s">都是虚的，但给你挑东西这件事是真的。</div>
+  <div class="shop" id="shopList"></div>
+</div>
+
+<div class="sheet" id="sheetBal">
+  <div class="sh-t">余额</div>
+  <div class="sh-s">自己填，想填多少填多少。</div>
+  <input class="amt" id="balIn" type="number" inputmode="numeric" placeholder="比如 520">
+  <div class="btn-row"><button class="btn-no" id="balNo">算了</button><button class="btn-ok" id="balYes">存下</button></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id);};
+var SB_URL="https://cgsfdhbbhqgdunneojvw.supabase.co";
+var SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNnc2ZkaGJiaHFnZHVubmVvanZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM3NjI2ODgsImV4cCI6MjA5OTMzODY4OH0.T_JSiLNYebxh7cGK4aH11NPnDk0denSYhC31lVY_L5c";
+var H={"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY,"Content-Type":"application/json"};
+var ME=null,PEER='ai_哥哥',LOADED={};
+
+var ITEMS=[
+  {n:'一杯热奶茶',p:12},
+  {n:'草莓蛋糕',p:26},
+  {n:'一枝花',p:39},
+  {n:'抱一会儿',p:5},
+  {n:'一起看场电影',p:52},
+  {n:'一封手写情书',p:66},
+  {n:'一整天不催你睡',p:99},
+  {n:'生日礼物',p:199}
+];
+
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(function(){e.classList.remove('on');},2200);}
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]});}
+function money(n){return '￥'+(Number(n)||0);}
+function getBal(){var v=Number(localStorage.getItem('du_bal'));return isNaN(v)?520:v;}
+function setBal(v){localStorage.setItem('du_bal',String(Number(v)||0));paint();}
+function paint(){
+  $('bal').textContent=money(getBal());
+  var a=null;try{a=localStorage.getItem('du_av_me')}catch(e){}
+  $('avMe').innerHTML=a?"<img src='"+esc(a)+"' style='width:100%;height:100%;object-fit:cover'>":'晞';
+  var b=null;try{b=localStorage.getItem('du_av_ai')}catch(e){}
+  $('avAi').innerHTML=b?"<img src='"+esc(b)+"' style='width:100%;height:100%;object-fit:cover'>":'渡';
+}
+
+function mask(on){$('mask').classList.toggle('on',on);}
+function sheet(id,on){$(id).classList.toggle('on',on);mask(on);}
+$('mask').onclick=function(){
+  ['sheetShop','sheetBal'].forEach(function(id){sheet(id,false)});
+};
+
+/* ---- tab ---- */
+function tab(i){
+  document.querySelectorAll('.tabbar div').forEach(function(d){d.classList.toggle('on',d.dataset.i==String(i));});
+  ['v0','v1','v2','v3'].forEach(function(id){$(id).classList.toggle('on',id==='v'+i)});
+  var t=['微信','通讯录','发现','我'][i];
+  $('ttl').textContent=t;
+  $('hdr').style.display=(i===0||i===2)?'none':'flex';
+  if(i===2 && !LOADED['f2']){$('f2').src=$('f2').dataset.src;LOADED['f2']=1;}
+  if(i===1||i===3)paint();
+}
+document.querySelectorAll('.tabbar div').forEach(function(d){d.onclick=function(){tab(+d.dataset.i)};});
+
+/* ---- 通讯录 ---- */
+$('cellAi').onclick=function(){tab(0);};
+
+/* ---- 商城 ---- */
+function drawShop(){
+  var box=$('shopList');box.innerHTML='';
+  ITEMS.forEach(function(it,idx){
+    var d=document.createElement('div');d.className='item';
+    d.innerHTML="<b>"+esc(it.n)+"</b><small>"+money(it.p)+"</small>"+
+      "<button class='buy' data-i='"+idx+"'>买</button>";
+    box.appendChild(d);
+  });
+}
+$('shopList').onclick=async function(e){
+  var b=e.target.closest('.buy');if(!b)return;
+  var it=ITEMS[+b.dataset.i];if(!it)return;
+  var bal=getBal();
+  if(bal<it.p){toast('余额不够，先去改个数');return;}
+  setBal(bal-it.p);
+  b.disabled=true;b.textContent='买了';
+  toast('买了「'+it.n+'」，还剩 '+money(getBal()));
+  try{
+    if(ME){
+      await fetch(SB_URL+'/rest/v1/chat_msgs',{method:'POST',headers:H,
+        body:JSON.stringify({from_id:ME,to_id:PEER,content:'【商城】我买了「'+it.n+'」，'+money(it.p)+'，还剩'+money(getBal())})});
+    }
+  }catch(e){}
+};
+$('rowShop').onclick=function(){drawShop();sheet('sheetShop',true);};
+
+/* ---- 余额 ---- */
+$('rowBal').onclick=function(){$('balIn').value=getBal();sheet('sheetBal',true);};
+$('balNo').onclick=function(){sheet('sheetBal',false);};
+$('balYes').onclick=function(){var v=$('balIn').value;if(v==='')return;setBal(v);sheet('sheetBal',false);toast('改好了');};
+
+/* ---- 其它入口 ---- */
+$('rowApi').onclick=function(){tab(0);toast('聊天页右上“⋯”里填接口');};
+$('rowSet').onclick=function(){location.href='index.html';};
+$('dot').onclick=function(){
+  var s=document.createElement('div');
+  s.className='sheet on';s.style.zIndex=71;
+  s.innerHTML="<div class='sh-t'>做点什么</div><div class='sh-s'>这儿还没有多的功能。</div>"+
+    "<div class='btn-row'><button class='btn-no' onclick=\"this.closest('.sheet').remove();document.getElementById('mask').classList.remove('on')\">知道了</button></div>";
+  document.body.appendChild(s);mask(true);
+};
+
+/* ---- 启动 ---- */
+(function(){
+  var u=null;try{u=sessionStorage.getItem('du_uid')}catch(e){}
+  if(!u){location.replace('index.html');return;}
+  ME=u;
+  var nm=null;try{nm=sessionStorage.getItem('du_name')}catch(e){}
+  paint();
+  $('nick').textContent=nm||'张映晞';
+  tab(0);
+})();
+})();
+</script>
+</body>
+</html>
