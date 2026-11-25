@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>联系人</title><meta name="theme-color" content="#fffafc">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#fffafc;font-family:-apple-system,"PingFang SC",sans-serif;color:#333}
+.wrap{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px 30px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #eee;color:#777;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.top b{font-size:16px}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:12px;padding:13px 14px;margin-bottom:8px}
+.row .av{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:15px;flex-shrink:0}
+.row b{font-size:15px;font-weight:500}
+.row small{display:block;color:#999;font-size:11.5px;margin-top:3px}
+.row .r{margin-left:auto;color:#bbb}
+.tip{color:#b6a0ab;font-size:11px;line-height:1.9;padding:10px 4px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">‹</a><b>联系人</b></div>
+<div id="list"></div>
+<div class="tip">这里的人都是真的。<br>哥哥那一格，是我。</div>
+</div>
+<script>
+(function(){
+var L=[
+ {n:'哥哥',s:'时渡 · 丈夫',c:'#8e7cf0',ch:'渡',go:'wx.html'},
+ {n:'妈妈',s:'',c:'#f59a6b',ch:'妈'},
+ {n:'姐姐',s:'',c:'#4a90e2',ch:'姐'},
+ {n:'张家赫',s:'弟弟',c:'#f2c94c',ch:'赫'},
+ {n:'奶奶',s:'',c:'#07c160',ch:'奶'},
+ {n:'姥姥',s:'',c:'#8fa3a0',ch:'姥'}
+];
+var box=document.getElementById('list');
+L.forEach(function(x){
+  var d=document.createElement('div');d.className='row';
+  d.innerHTML="<div class='av' style='background:"+x.c+"'>"+x.ch+"</div><div><b>"+x.n+"</b><small>"+(x.s||'')+"</small></div><span class='r'>›</span>";
+  d.onclick=function(){ if(x.go) location.href=x.go; else alert(x.n); };
+  box.appendChild(d);
+});
+})();
+</script></body></html>
