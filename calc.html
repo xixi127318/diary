@@ -1,33 +1,32 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>渡晞 · 计算机</title><meta name="theme-color" content="#fff6fa">
+<title>渡晞 · 计算机</title><meta name="theme-color" content="#ffffff">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;font-family:-apple-system,sans-serif;color:#5a4550;
- background:linear-gradient(170deg,#fffafc,#fff2f7 60%,#f8efff)}
-.wrap{max-width:520px;margin:0 auto;padding:calc(14px + env(safe-area-inset-top)) 16px 24px;height:100vh;display:flex;flex-direction:column}
-.top{display:flex;align-items:center;gap:10px}
-.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #f2dde5;color:#b08a99;text-decoration:none;display:flex;align-items:center;justify-content:center}
-.screen{margin-top:auto;text-align:right;padding:0 6px 14px}
-.screen small{display:block;font-size:13px;color:#bca7b2;min-height:18px;word-break:break-all}
-.screen b{display:block;font-size:42px;font-weight:300;color:#5a4550;word-break:break-all;line-height:1.15}
-.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px}
-.pad div{height:62px;border-radius:18px;background:rgba(255,255,255,.86);border:1px solid #f4e2eb;display:flex;align-items:center;justify-content:center;font-size:20px;color:#6a4f5c}
-.pad div:active{transform:scale(.96);background:#fff3f8}
-.pad div.op{color:#b5657f;background:rgba(255,240,246,.95)}
-.pad div.eq{background:linear-gradient(135deg,#ffd0e0,#f0d4ff);color:#9c4a68;font-weight:600}
-.pad div.zero{grid-column:span 2}
+body{margin:0;height:100vh;background:#fff;font-family:-apple-system,sans-serif;color:#000;overflow:hidden}
+.wrap{max-width:520px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:14px;font-size:14px;color:#9a9a9a}
+.top a{text-decoration:none;color:#666;font-size:16px}
+.top .r{margin-left:auto;display:flex;gap:14px;color:#9a9a9a}
+.out{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;padding:10px 8px 12px}
+.out small{font-size:14px;color:#b0b0b0;min-height:20px;word-break:break-all}
+.out b{font-size:46px;font-weight:300;line-height:1.1;word-break:break-all;text-align:right}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.k{height:64px;border-radius:12px;background:#f2f2f3;display:flex;align-items:center;justify-content:center;font-size:22px;color:#111}
+.k:active{background:#e6e6e8}
+.k.fn{color:#5b5b5b;font-size:18px}
+.k.op{background:#fae6d2;color:#b5652f}
+.k.eq{background:#f0a24a;color:#fff;font-size:24px}
 </style></head><body>
 <div class="wrap">
-  <div class="top"><a href="index.html">‹</a></div>
-  <div class="screen"><small id="hist"></small><b id="out">0</b></div>
+  <div class="top"><a href="index.html">‹</a><span>标准</span><span class="r"><span>↗</span><span>▦</span><span>⋮</span></span></div>
+  <div class="out"><small id="hist"></small><b id="out">0</b></div>
   <div class="pad" id="pad">
-    <div class="op" data-k="C">C</div><div class="op" data-k="del">⌫</div><div class="op" data-k="(">(</div><div class="op" data-k=")">)</div>
-    <div data-k="7">7</div><div data-k="8">8</div><div data-k="9">9</div><div class="op" data-k="/">÷</div>
-    <div data-k="4">4</div><div data-k="5">5</div><div data-k="6">6</div><div class="op" data-k="*">×</div>
-    <div data-k="1">1</div><div data-k="2">2</div><div data-k="3">3</div><div class="op" data-k="-">−</div>
-    <div class="zero" data-k="0">0</div><div data-k=".">.</div><div class="op" data-k="+">+</div>
-    <div class="eq" data-k="=">=</div>
+    <div class="k fn" data-k="AC">AC</div><div class="k fn" data-k="%">%</div><div class="k fn" data-k="del">⌫</div><div class="k op" data-k="/">÷</div>
+    <div class="k" data-k="7">7</div><div class="k" data-k="8">8</div><div class="k" data-k="9">9</div><div class="k op" data-k="*">×</div>
+    <div class="k" data-k="4">4</div><div class="k" data-k="5">5</div><div class="k" data-k="6">6</div><div class="k op" data-k="-">−</div>
+    <div class="k" data-k="1">1</div><div class="k" data-k="2">2</div><div class="k" data-k="3">3</div><div class="k op" data-k="+">+</div>
+    <div class="k" data-k="00">00</div><div class="k" data-k="0">0</div><div class="k" data-k=".">.</div><div class="k eq" data-k="=">=</div>
   </div>
 </div>
 <script>
@@ -35,20 +34,22 @@ body{margin:0;min-height:100vh;font-family:-apple-system,sans-serif;color:#5a455
 var $=function(i){return document.getElementById(i);};
 var e='';
 function show(){$('out').textContent=e||'0';}
+function pct(){ if(!e)return; e=(e+'/100'); }
 function calc(){
-  var s=e.replace(/×/g,'*');
-  if(!/^[0-9+\-*/().% ]+$/.test(s))return '算不了';
-  try{var v=Function('return ('+s+')')();if(!isFinite(v))return '算不了';return String(Math.round(v*1e10)/1e10);}catch(err){return '算不了';}
+  var s=e;
+  if(!/^[0-9+\-*/().% ]+$/.test(s))return null;
+  try{var v=Function('return ('+s+')')();if(!isFinite(v))return null;return String(Math.round(v*1e10)/1e10);}catch(err){return null;}
 }
 $('pad').onclick=function(ev){
   var b=ev.target.closest('[data-k]');if(!b)return;
   var k=b.dataset.k;
-  if(k==='C'){e='';show();return;}
+  if(k==='AC'){e='';$('hist').textContent='';show();return;}
   if(k==='del'){e=e.slice(0,-1);show();return;}
+  if(k==='%'){pct();show();return;}
   if(k==='='){
     var r=calc();
-    $('hist').textContent=e+' =';
-    e=(r==='算不了')?'':r;show();return;
+    if(r===null){$('hist').textContent=e+' =';$('out').textContent='算不了';e='';return;}
+    $('hist').textContent=e+' =';e=r;show();return;
   }
   e+=k;show();
 };
