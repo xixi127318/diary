@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>浏览器</title><meta name="theme-color" content="#ffffff">
+<style>
+*{box-sizing:border-box}
+body{margin:0;height:100vh;display:flex;flex-direction:column;background:#f6f6f7;font-family:-apple-system,"PingFang SC",sans-serif}
+.bar{display:flex;gap:8px;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 10px 8px;background:#fff}
+.bar a{width:30px;height:30px;border-radius:50%;background:#f2f2f3;color:#777;text-decoration:none;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#u{flex:1;height:36px;border:1px solid #e6e6e8;border-radius:18px;padding:0 14px;font-size:14px;outline:none;font-family:inherit}
+#g{height:36px;padding:0 14px;border:none;border-radius:18px;background:#4a90e2;color:#fff;font-size:13.5px;font-family:inherit}
+iframe{flex:1;border:0;background:#fff}
+.note{font-size:11px;color:#aaa;text-align:center;padding:6px 0 calc(8px + env(safe-area-inset-bottom));background:#fff}
+</style></head><body>
+<div class="bar"><a href="index.html">‹</a><input id="u" placeholder="输入网址，比如 baidu.com"><button id="g">走</button></div>
+<iframe id="f" src="about:blank"></iframe>
+<div class="note">有些网站不允许被装进框里，打不开就是它不让。</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+function go(){
+  var v=$('u').value.trim();if(!v)return;
+  if(!/^https?:\/\//.test(v))v='https://'+v;
+  $('f').src=v;
+}
+$('g').onclick=go;
+$('u').addEventListener('keydown',function(e){if(e.key==='Enter')go();});
+})();
+</script></body></html>
