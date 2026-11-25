@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>备忘录</title><meta name="theme-color" content="#fffafc">
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#fffdf8;font-family:-apple-system,"PingFang SC",sans-serif;color:#333}
+.wrap{max-width:560px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top)) 14px 90px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.top a{width:30px;height:30px;border-radius:50%;background:#fff;border:1px solid #eee;color:#777;text-decoration:none;display:flex;align-items:center;justify-content:center}
+.top b{font-size:16px;margin-right:auto}
+.n{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #f3ecd9}
+.n .h{font-size:11px;color:#b9a98a}
+.n .t{font-size:15px;line-height:1.8;white-space:pre-wrap;margin-top:6px;word-break:break-word}
+.n .d{color:#e0a0a0;font-size:11px;margin-top:8px}
+.empty{color:#c9bda6;font-size:13px;text-align:center;padding:40px}
+.add{position:fixed;right:16px;bottom:calc(24px + env(safe-area-inset-bottom));width:52px;height:52px;border-radius:50%;background:#f0a24a;color:#fff;font-size:26px;border:none;display:flex;align-items:center;justify-content:center}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.3);display:none;align-items:center;justify-content:center;padding:0 20px;z-index:20}
+.mask.on{display:flex}
+.box{background:#fff;border-radius:14px;padding:16px;width:100%;max-width:340px}
+.box textarea{width:100%;min-height:120px;border:1px solid #eee;border-radius:10px;padding:10px;font-size:14.5px;font-family:inherit;outline:none;resize:vertical}
+.box .b{display:flex;gap:10px;margin-top:12px}
+.box .b button{flex:1;height:40px;border-radius:10px;border:none;font-family:inherit;font-size:14px}
+</style></head><body><div class="wrap">
+<div class="top"><a href="index.html">‹</a><b>备忘录</b></div>
+<div id="list"></div>
+</div>
+<button class="add" id="add">＋</button>
+<div class="mask" id="mask"><div class="box"><textarea id="tx" placeholder="记点什么……"></textarea><div class="b"><button id="no" style="background:#f2f2f2;color:#555">算了</button><button id="yes" style="background:#f0a24a;color:#fff">存下</button></div></div></div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i);};
+function load(){try{return JSON.parse(localStorage.getItem('du_notes')||'[]')}catch(e){return []}}
+function save(a){try{localStorage.setItem('du_notes',JSON.stringify(a))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>]/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m]});}
+function draw(){
+  var a=load(),L=$('list');
+  if(!a.length){L.innerHTML="<div class='empty'>还没有字。</div>";return;}
+  L.innerHTML='';
+  a.slice().reverse().forEach(function(n,idx){
+    var d=document.createElement('div');d.className='n';
+    d.innerHTML="<div class='h'>"+(n.t||'')+"</div><div class='t'>"+esc(n.c)+"</div><div class='d' data-i='"+(a.length-1-idx)+"'>删掉</div>";
+    L.appendChild(d);
+  });
+  L.querySelectorAll('.d').forEach(function(x){x.onclick=function(){
+    if(!confirm('删掉这条？'))return;
+    var arr=load();arr.splice(+x.dataset.i,1);save(arr);draw();
+  };});
+}
+$('add').onclick=function(){$('tx').value='';$('mask').classList.add('on');};
+$('no').onclick=function(){$('mask').classList.remove('on');};
+$('yes').onclick=function(){
+  var v=$('tx').value.trim();if(!v)return;
+  var a=load();a.push({c:v,t:new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'})});save(a);
+  $('mask').classList.remove('on');draw();
+};
+draw();
+})();
+</script></body></html>
